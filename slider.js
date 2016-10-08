@@ -57,7 +57,6 @@ $(document).ready(function(){
 		return tooltip;
 	}
 
-	//debugger;
 	areas.toArray().forEach(function(elem){
 		var area = $(elem);
 		$("#" + area.parent().attr('id') + " #" + area.attr('id')).click(function(e){
@@ -100,10 +99,10 @@ $(document).ready(function(){
 		var className = "." + [area.parent().attr('id'),area.attr('id')].join("_").replace(/\-/g,"_");
 		calculateCoords(area,className);
 		tooltip = setTooltipPosition(className,2,20,0);
-		tooltip.css({top : (tooltip.offset().top - tooltip.height()/2)})
 		var tooltips = $('.tooltips');
 		$('img.img_map').maphilight({alwaysOn : true,fillOpacity:0.75});
 		$('div.img_map').append(tooltips);
+		tooltip.css({top : (tooltip.offset().top - tooltip.height()/2)})
 	}
 
 	function zoomIn(){zoom(1+zoomer);}
