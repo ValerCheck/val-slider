@@ -5,6 +5,23 @@ $(document).ready(function(){
 	var cur_w = $('.img_map').width();
 	var cur_h = $('.img_map').height();
 
+	var yearPoints = {
+		'map-1':[
+			function(){
+				return [coords(475,535.5),coords(494,512),coords(520,535.5),coords(499.5,555)];
+			},
+			function(){
+				return [coords(525,535),coords(555,498),coords(585,521),coords(555,558)];
+			},
+			function(){
+				return [coords(568,557),coords(595.5,523),coords(623,544),coords(595.5,578)];	
+			},
+			function(){
+				return [coords(517,615.5),coords(526.5,603),coords(543,615.5),coords(534,628)];
+			}
+		]
+	}
+
 	function get_x(x){
 		return cur_w*x/img_w;
 	}
@@ -17,9 +34,13 @@ $(document).ready(function(){
 		return get_x(x) + "," + get_y(y);
 	}
 
-	$('area').data('maphilight',{"fillColor":"0168c4","strokeColor":"000000",'strokeWidth':1,"strokeOpacity":0.75});
-
-	$('area').attr('coords',[coords(475,535.5),coords(494,512),coords(520,535.5),coords(499.5,555)].join(","))
+	$('area')
+	.data('maphilight',{"fillColor":"0168c4","strokeColor":"000000",'strokeWidth':1,"strokeOpacity":0.75})
+	.toArray()
+	.forEach(function(el){
+		var a = $(el);
+		a.attr('coords',yearPoints[a.parent().attr('id')][a.data('number')-1]().join(","));
+	});
 
 	$('.img_map').maphilight({alwaysOn : true,fillOpacity:0.75});
 	
@@ -31,19 +52,19 @@ $(document).ready(function(){
 	var areasPoints = {};
 
 	function calculateCoords(area,className){
-		var points =  [];
-		var point = {};
+		var pts =  [];
+		var p = {};
 		area.attr('coords').split(',').forEach(function(el,i){
-			if (i % 2 == 0 && !point.x) point.x = parseFloat(el);
-			else if (i % 2 == 1 && !point.y) point.y = parseFloat(el);
-			if (point.x && point.y) {
-				points.push(point);
-				point = {};
+			if (i % 2 == 0 && !p.x) p.x = parseFloat(el);
+			else if (i % 2 == 1 && !p.y) p.y = parseFloat(el);
+			if (p.x && p.y) {
+				pts.push(p);
+				p = {};
 			}
 		});
 		areasPoints[className] = {
 			className : className,
-			points : points
+			points 	  : pts
 		};
 	}
 
@@ -94,15 +115,20 @@ $(document).ready(function(){
 		cur_h = old_height * mul;
 		map.width(cur_w);
 		map.height(cur_h);
-		var area = $('area');
-		area.attr('coords',[coords(475,535.5),coords(494,512),coords(520,535.5),coords(499.5,555)].join(","));
-		var className = "." + [area.parent().attr('id'),area.attr('id')].join("_").replace(/\-/g,"_");
-		calculateCoords(area,className);
-		tooltip = setTooltipPosition(className,2,20,0);
+		var areas = $('area');
+		areas.toArray().forEach(function(el){
+			var area = $(el);
+			area.attr('coords',yearPoints[area.parent().attr('id')][area.data('number')-1]().join(","));
+			var className = "." + [area.parent().attr('id'),area.attr('id')].join("_").replace(/\-/g,"_");
+			calculateCoords(area,className);
+			setTooltipPosition(className,2,20,0);
+		});
+		
 		var tooltips = $('.tooltips');
 		$('img.img_map').maphilight({alwaysOn : true,fillOpacity:0.75});
 		$('div.img_map').append(tooltips);
-		tooltip.css({top : (tooltip.offset().top - tooltip.height()/2)})
+		var tooltip = $('.tooltip.active');
+		if (tooltip.length) tooltip.css({top : (tooltip.offset().top - tooltip.height()/2)})
 	}
 
 	function zoomIn(){zoom(1+zoomer);}
