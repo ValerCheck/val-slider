@@ -2,18 +2,29 @@
 <html>
 <head>
 	<link rel="stylesheet" type="text/css" href="styles.css"/>
-	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
-	<script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
-	<script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
+	<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+	<script type="text/javascript" src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+	<script type="text/javascript" src="./jquery.maphilight.js"></script>
 	<script src="slider.js"></script>
 </head>
 <body>
 	<div class="val-slider">
 		<div class="val-slider-wrapper">
+			<div class="description"></div>
 			<ul class="slider-list">
-				<li><div id="map-1"></div></li>
+				<li>
+					<img class="img_map" usemap="#map-1" src="./images/map.png"/>
+					<map name="map-1" id="map-1">
+						<area shape="poly" alt="Sheffield" href="#">
+					</map>
+					<div class="tooltips">
+						<div class="tooltip map_1_area_1"></div>
+					</div>
+				</li>
 			</ul>
 		</div>
 	</div>
+	<input type="button" id="zoomout" class="button" value="Zoom out">
+	<input type="button" id="zoomin" class="button" value="Zoom in">
 </body>
 </html>
