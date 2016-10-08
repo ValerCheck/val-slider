@@ -28,24 +28,49 @@ $(document).ready(function(){
 	});
 
 	var areas = $('area');
+	var areasPoints = {};
+
+	function calculateCoords(area,className){
+		var points =  [];
+		var point = {};
+		area.attr('coords').split(',').forEach(function(el,i){
+			if (i % 2 == 0 && !point.x) point.x = parseFloat(el);
+			else if (i % 2 == 1 && !point.y) point.y = parseFloat(el);
+			if (point.x && point.y) {
+				points.push(point);
+				point = {};
+			}
+		});
+		areasPoints[className] = {
+			className : className,
+			points : points
+		};
+	}
+
+	function setTooltipPosition(className,p,xd,yd){
+		var tooltip = $(className);
+		
+		tooltip.css({
+			'top'  : areasPoints[className].points[p].y + yd,
+			'left' : areasPoints[className].points[p].x + xd
+		});
+		return tooltip;
+	}
+
 	//debugger;
 	areas.toArray().forEach(function(elem){
 		var area = $(elem);
 		$("#" + area.parent().attr('id') + " #" + area.attr('id')).click(function(e){
 			e.preventDefault();
-			var points =  [];
-			var point = {};
-			area.attr('coords').split(',').forEach(function(el,i){
-				if (i % 2 == 0 && !point.x) point.x = parseFloat(el);
-				else if (i % 2 == 1 && !point.y) point.y = parseFloat(el);
-				if (point.x && point.y) {
-					points.push(point);
-					point = {};
-				}
-			});
-			var tooltip = $("." + [area.parent().attr('id'),area.attr('id')].join("_").replace(/\-/g,"_"));
-			tooltip.css({'top':(points[2].y),'left' : points[2].x + 20});
-			tooltip.toggle().css({top : (tooltip.offset().top - tooltip.height()/2)});
+			var className = "." + [area.parent().attr('id'),area.attr('id')].join("_").replace(/\-/g,"_");
+			if (!areasPoints[className]) calculateCoords(area,className);
+			
+			var tooltip = setTooltipPosition(className,2,20,0);
+			var isActive = false;
+			if (tooltip.hasClass('active')) isActive = true;
+			$('.tooltip.active').removeClass('active');
+			if (isActive) return;
+			tooltip.toggleClass('active').css({top : (tooltip.offset().top - tooltip.height()/2)});
 		});
 	})
 
@@ -70,8 +95,15 @@ $(document).ready(function(){
 		cur_h = old_height * mul;
 		map.width(cur_w);
 		map.height(cur_h);
-		$('area').attr('coords',[coords(475,535.5),coords(494,512),coords(520,535.5),coords(499.5,555)].join(","));
+		var area = $('area');
+		area.attr('coords',[coords(475,535.5),coords(494,512),coords(520,535.5),coords(499.5,555)].join(","));
+		var className = "." + [area.parent().attr('id'),area.attr('id')].join("_").replace(/\-/g,"_");
+		calculateCoords(area,className);
+		tooltip = setTooltipPosition(className,2,20,0);
+		tooltip.css({top : (tooltip.offset().top - tooltip.height()/2)})
+		var tooltips = $('.tooltips');
 		$('img.img_map').maphilight({alwaysOn : true,fillOpacity:0.75});
+		$('div.img_map').append(tooltips);
 	}
 
 	function zoomIn(){zoom(1+zoomer);}

@@ -69,6 +69,10 @@ div.img_map {
 	display: none;
 }
 
+.tooltip.active {
+	display: block;
+}
+
 .tooltip {
 	position: relative;
 	background: #efefef;
