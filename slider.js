@@ -27,6 +27,30 @@ $(document).ready(function(){
 		return false;
 	});
 
+	var areas = $('area');
+	//debugger;
+	areas.toArray().forEach(function(elem){
+		var area = $(elem);
+		$("#" + area.parent().attr('id') + " #" + area.attr('id')).click(function(e){
+			e.preventDefault();
+			var points =  [];
+			var point = {};
+			area.attr('coords').split(',').forEach(function(el,i){
+				if (i % 2 == 0 && !point.x) point.x = parseFloat(el);
+				else if (i % 2 == 1 && !point.y) point.y = parseFloat(el);
+				if (point.x && point.y) {
+					points.push(point);
+					point = {};
+				}
+			});
+			var tooltip = $("." + [area.parent().attr('id'),area.attr('id')].join("_").replace(/\-/g,"_"));
+			tooltip.css({'top':(points[2].y),'left' : points[2].x + 20});
+			tooltip.toggle().css({top : (tooltip.offset().top - tooltip.height()/2)});
+		});
+	})
+
+	var tooltips = $('.tooltips');
+	tooltips.parent().find('div.img_map').append(tooltips);
 
 	var img_ele = null,
 		map = null,
