@@ -90,7 +90,7 @@ $(document).ready(function(){
 			if (tooltip.hasClass('active')) isActive = true;
 			$('.tooltip.active').removeClass('active');
 			if (isActive) return;
-			tooltip.toggleClass('active').css({top : (tooltip.offset().top - tooltip.height()/2)});
+			tooltip.toggleClass('active').css({top : (tooltip.offset().top - tooltip.height()/2 - $('.img_map').offset().top)});
 		});
 	})
 
@@ -141,8 +141,8 @@ $(document).ready(function(){
 
 	function start_drag() {
 	  img_ele = this;
-	  x_img_ele = window.event.clientX - document.querySelector('.img_map').offsetLeft;
-	  y_img_ele = window.event.clientY - document.querySelector('.img_map').offsetTop;
+	  x_img_ele = window.event.clientX - $('.img_map').position().left;
+	  y_img_ele = window.event.clientY - $('.img_map').position().top;
 
 	}
 
@@ -159,7 +159,7 @@ $(document).ready(function(){
 	  	if (window.event.clientY - y_img_ele > 0) img_ele.style.top = 0;
 	    else img_ele.style.top = (window.event.clientY - y_img_ele) + 'px';
 
-	      console.log(img_ele.style.left+' - '+img_ele.style.top);
+	    //console.log(img_ele.style.left+' - '+img_ele.style.top);
 
 	  }
 	}
