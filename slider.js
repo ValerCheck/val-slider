@@ -79,12 +79,14 @@ $(document).ready(function(){
 	}
 
 	areas.toArray().forEach(function(elem){
+		var tooltips = $('.tooltips');
+		var parent = tooltips.parent().find('div.img_map');
+		if (parent.length) parent.append(tooltips);
 		var area = $(elem);
 		$("#" + area.parent().attr('id') + " #" + area.attr('id')).click(function(e){
 			e.preventDefault();
 			var className = "." + [area.parent().attr('id'),area.attr('id')].join("_").replace(/\-/g,"_");
 			if (!areasPoints[className]) calculateCoords(area,className);
-			
 			var tooltip = setTooltipPosition(className,2,20,0);
 			var isActive = false;
 			if (tooltip.hasClass('active')) isActive = true;
@@ -95,14 +97,31 @@ $(document).ready(function(){
 	})
 
 	var tooltips = $('.tooltips');
-	tooltips.parent().find('div.img_map').append(tooltips);
 
-	var img_ele = null,
-		map = null,
-		x_cursor = 0,
-		y_cursor = 0,
-		x_img_ele = 0,
-		y_img_ele = 0;
+	var map = null,
+		cursor = {
+			x : 0,
+			y : 0
+		},
+		delta = {
+			left   : 0,
+			top    : 0,
+			right  : 0,
+			bottom : 0
+		},
+		img = {
+			frame  : {
+				top    : $('img.img_map').position().top,
+				left   : $('img.img_map').position().left,
+				width  : $('div.img_map').parent().width(),
+				height : $('div.img_map').parent().height()
+			},
+			obj    : null,
+			x      : 0,
+			y 	   : 0,
+			width  : 0,
+			height : 0
+		};
 
 	const zoomer = 0.1;
 
@@ -134,38 +153,56 @@ $(document).ready(function(){
 	function zoomIn(){zoom(1+zoomer);}
 	function zoomOut(){zoom(1-zoomer);}
 
-
-	$('#zoomout').on('click',zoomOut);
-
-	$('#zoomin').on('click',zoomIn);
+	function UpdateCursor(){
+		cursor.x = window.event.clientX;
+		cursor.y = window.event.clientY;
+	}
 
 	function start_drag() {
-	  img_ele = this;
-	  x_img_ele = window.event.clientX - $('.img_map').position().left;
-	  y_img_ele = window.event.clientY - $('.img_map').position().top;
-
+		UpdateCursor();
+		img.obj 	= this;
+		img.left 	= $('div.img_map').position().left;
+		img.top 	= $('div.img_map').position().top;
+		img.width 	= $('div.img_map').width();
+		img.height 	= $('div.img_map').height();
+		delta.left 	= cursor.x - img.left;
+		delta.width 	= img.left + img.width;
+		delta.height 	= img.top + img.height;
+		delta.top 		= cursor.y - img.top;
 	}
 
 	function stop_drag() {
-	  img_ele = null;
+		img.obj = null;
 	}
 
 	function while_drag() {
-	  var x_cursor = window.event.clientX;
-	  var y_cursor = window.event.clientY;
-	  if (img_ele !== null) {
-	  	if (x_cursor - x_img_ele > 0) img_ele.style.left = 0;
-	  	else img_ele.style.left = (x_cursor - x_img_ele) + 'px';
-	  	if (window.event.clientY - y_img_ele > 0) img_ele.style.top = 0;
-	    else img_ele.style.top = (window.event.clientY - y_img_ele) + 'px';
+		UpdateCursor();
+        if (img.obj !== null) {
+           	var props = {
+           		left : cursor.x - delta.left,
+           		top  : cursor.y - delta.top
+           	}
 
-	    //console.log(img_ele.style.left+' - '+img_ele.style.top);
+           	if (props.left > 0) props.left = 0;
+           	if (props.top > 0) props.top = 0;
+           	if (props.left + img.width <= img.frame.left + img.frame.width) {
+           		props.left = img.frame.width - img.width;
+           	}
+           	if (props.top + img.height <= img.frame.top + img.frame.height) {
+           		props.top = img.frame.height - img.height;
+           	}
 
-	  }
+           	$(img.obj).css({
+           		top  : props.top,
+           		left : props.left
+           	});
+        }
 	}
 
 	$(document).on('mousedown','div.img_map',start_drag);
 	$(document).on('mousemove','.slider-list',while_drag);
 	$(document).on('mouseup','.slider-list',stop_drag);
+	$(document).on('click','#zoomout',zoomOut);
+	$(document).on('click','#zoomin',zoomIn);
 
-})
+});
