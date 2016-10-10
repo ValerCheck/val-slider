@@ -215,6 +215,8 @@ $(document).ready(function(){
         }
 	}
 
+	$('.slider-controls').appendTo('.slider-list li');
+
 	$(document).on('mousedown','div.img_map',start_drag);
 	$(document).on('mousemove','.slider-list',while_drag);
 	$(document).on('mouseup','.slider-list',stop_drag);
