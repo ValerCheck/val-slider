@@ -7,6 +7,10 @@ $(document).ready(function(){
 	var cur_h = $('.img_map').height();
 
 	$('.slider-list > li').addClass('val-slide');
+	$('.slider-list > li').toArray().forEach(function(el){
+		var newLi = $('<li></li>');
+		newLi.append($(el).find('.slide-title')).appendTo('.slides-titles');
+	});
 
 	var yearPoints = {
 		'map-1':[
@@ -46,10 +50,6 @@ $(document).ready(function(){
 	});
 
 	$('.img_map').maphilight({alwaysOn : true,fillOpacity:0.75});
-	
-	$(document).on('dragstart','div.img_map',function(){
-		return false;
-	});
 
 	var areas = $('area');
 	var areasPoints = {};
@@ -73,7 +73,6 @@ $(document).ready(function(){
 
 	function setTooltipPosition(className,p,xd,yd){
 		var tooltip = $(className);
-		
 		tooltip.css({
 			'top'  : areasPoints[className].points[p].y + yd,
 			'left' : areasPoints[className].points[p].x + xd
@@ -101,11 +100,7 @@ $(document).ready(function(){
 
 	var tooltips = $('.tooltips');
 
-	var map = null,
-		cursor = {
-			x : 0,
-			y : 0
-		},
+	var cursor = { x : 0, y : 0 },
 		delta = {
 			left   : 0,
 			top    : 0,
@@ -120,8 +115,6 @@ $(document).ready(function(){
 				height : $('div.img_map').parent().height()
 			},
 			obj    : null,
-			x      : 0,
-			y 	   : 0,
 			width  : 0,
 			height : 0
 		};
@@ -153,7 +146,7 @@ $(document).ready(function(){
 	}
 
 	function zoom(mul) {
-		map = $('.img_map');
+		var map = $('.img_map');
 		var old_width = map.width(), 
 			old_height = map.height();
 		scale *= mul;
@@ -175,12 +168,6 @@ $(document).ready(function(){
 		updateControlsStatus(mul);
 	}
 
-	function zoomIn(){zoom(1+zoomer);}
-	function zoomOut(){zoom(1-zoomer + 0.019);}
-	function resetView(){
-		zoom(1.0/scale);
-	}
-
 	function UpdateCursor(event){
 		event = window.event || event;
 		cursor.x = event.clientX;
@@ -200,26 +187,21 @@ $(document).ready(function(){
 		delta.top 		= cursor.y - img.top;
 	}
 
-	function stop_drag() {
-		img.obj = null;
-	}
-
 	function while_drag(event) {
 		UpdateCursor(event);
         if (img.obj !== null) {
+           	
            	var props = {
            		left : cursor.x - delta.left,
            		top  : cursor.y - delta.top
            	}
 
            	if (props.left > 0) props.left = 0;
-           	if (props.top > 0) props.top = 0;
-           	if (props.left + img.width <= img.frame.left + img.frame.width) {
+           	else if (props.left + img.width <= img.frame.left + img.frame.width) 
            		props.left = img.frame.width - img.width;
-           	}
-           	if (props.top + img.height <= img.frame.top + img.frame.height) {
+           	if (props.top > 0) props.top = 0;
+           	else if (props.top + img.height <= img.frame.top + img.frame.height)
            		props.top = img.frame.height - img.height;
-           	}
 
            	$(img.obj).css({
            		top  : props.top,
@@ -231,11 +213,12 @@ $(document).ready(function(){
 	$('.slider-controls').appendTo('.val-slide');
 	$('#zoomout').attr('disabled','disabled');
 
+	$(document).on('dragstart','div.img_map',function(){return false;});
 	$(document).on('mousedown','div.img_map',start_drag);
 	$(document).on('mousemove','.slider-list',while_drag);
-	$(document).on('mouseup','.slider-list',stop_drag);
-	$(document).on('click','#zoomout',zoomOut);
-	$(document).on('click','#zoomin',zoomIn);
-	$(document).on('click','#reset',resetView);
+	$(document).on('mouseup','.slider-list',function(){img.obj = null});
+	$(document).on('click','#zoomout',function(){zoom(1-zoomer + 0.019);});
+	$(document).on('click','#zoomin',function(){zoom(1+zoomer);});
+	$(document).on('click','#reset',function(){zoom(1.0/scale);});
 
 });
