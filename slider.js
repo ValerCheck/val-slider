@@ -6,6 +6,8 @@ $(document).ready(function(){
 	var cur_w = $('.img_map').width();
 	var cur_h = $('.img_map').height();
 
+	$('.slider-list > li').addClass('val-slide');
+
 	var yearPoints = {
 		'map-1':[
 			function(){
@@ -142,7 +144,12 @@ $(document).ready(function(){
 		$('img.img_map').maphilight({alwaysOn : true,fillOpacity:0.75});
 		$('div.img_map').append(tooltips);
 		var tooltip = $('.tooltip.active');
-		if (tooltip.length) tooltip.css({top : (tooltip.offset().top - tooltip.height()/2)})
+		if (tooltip.length) tooltip.css({top:(tooltip.position().top - (tooltip.height()/2))});
+	}
+
+	function updateControlsStatus(mul){
+		if (scale * mul < 1) $('#zoomout').attr('disabled','disabled');
+		else $('#zoomout').removeAttr('disabled');
 	}
 
 	function zoom(mul) {
@@ -152,15 +159,20 @@ $(document).ready(function(){
 		scale *= mul;
 		cur_w = old_width * mul;
 		cur_h = old_height * mul;
-		if (cur_w <= img.frame.width || cur_h <= img.frame.height) {
-			$('img.img_map').height(img.frame.height);
-			$('img.img_map').width('auto');
+		if (scale == 1 || cur_w <= img.frame.width || cur_h <= img.frame.height) {
+			$('.img_map').height(img.frame.height);
+			$('.img_map').width(img.frame.width);
+			redrawAreas();
+			redrawTooltips();
+			updateControlsStatus(mul);	
 			scale = 1;
+			return;
 		}
 		map.width(cur_w);
 		map.height(cur_h);
 		redrawAreas();
 		redrawTooltips();
+		updateControlsStatus(mul);
 	}
 
 	function zoomIn(){zoom(1+zoomer);}
@@ -215,7 +227,8 @@ $(document).ready(function(){
         }
 	}
 
-	$('.slider-controls').appendTo('.slider-list li');
+	$('.slider-controls').appendTo('.val-slide');
+	$('#zoomout').attr('disabled','disabled');
 
 	$(document).on('mousedown','div.img_map',start_drag);
 	$(document).on('mousemove','.slider-list',while_drag);
