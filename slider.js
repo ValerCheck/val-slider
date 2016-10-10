@@ -181,13 +181,14 @@ $(document).ready(function(){
 		zoom(1.0/scale);
 	}
 
-	function UpdateCursor(){
-		cursor.x = window.event.clientX;
-		cursor.y = window.event.clientY;
+	function UpdateCursor(event){
+		event = window.event || event;
+		cursor.x = event.clientX;
+		cursor.y = event.clientY;
 	}
 
-	function start_drag() {
-		UpdateCursor();
+	function start_drag(event) {
+		UpdateCursor(event);
 		img.obj 	= this;
 		img.left 	= $('div.img_map').position().left;
 		img.top 	= $('div.img_map').position().top;
@@ -203,8 +204,8 @@ $(document).ready(function(){
 		img.obj = null;
 	}
 
-	function while_drag() {
-		UpdateCursor();
+	function while_drag(event) {
+		UpdateCursor(event);
         if (img.obj !== null) {
            	var props = {
            		left : cursor.x - delta.left,
