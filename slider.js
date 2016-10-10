@@ -3,17 +3,28 @@ $(document).ready(function(){
 	const img_w = 1021;
 	const img_h = 941;
 	var scale = 1;
-	var cur_w = $('.img_map').width();
-	var cur_h = $('.img_map').height();
+	$('.slider-list > li:first-child').addClass('active');
+	var cur_w = $('.slider-list > .active .img_map').width();
+	var cur_h = $('.slider-list > .active .img_map').height();
 
 	$('.slider-list > li').addClass('val-slide');
 	$('.slider-list > li').toArray().forEach(function(el){
 		var newLi = $('<li></li>');
-		newLi.append($(el).find('.slide-title')).appendTo('.slides-titles');
+		newLi = newLi.append($(el).find('.slide-title')).data('slide-number',$(el).data('slide-number'));
+		if ($(el).hasClass('active')) newLi.addClass('active');
+		newLi.appendTo('.slides-titles');
 	});
 
 	var yearPoints = {
 		'map-1':[
+			function(){
+				return [coords(475,535.5),coords(494,512),coords(520,535.5),coords(499.5,555)];
+			},
+			function(){
+				return [coords(525,535),coords(555,498),coords(585,521),coords(555,558)];
+			}
+		],
+		'map-2':[
 			function(){
 				return [coords(475,535.5),coords(494,512),coords(520,535.5),coords(499.5,555)];
 			},
@@ -49,7 +60,7 @@ $(document).ready(function(){
 		a.attr('coords',yearPoints[a.parent().attr('id')][a.data('number')-1]().join(","));
 	});
 
-	$('.img_map').maphilight({alwaysOn : true,fillOpacity:0.75});
+	$('.slider-list > li.active img.img_map').maphilight({alwaysOn : true,fillOpacity:0.75});
 
 	var areas = $('area');
 	var areasPoints = {};

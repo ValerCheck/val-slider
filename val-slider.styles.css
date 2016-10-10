@@ -59,6 +59,23 @@ body {
 	border-bottom: 1px solid #c4c4c4;
 }
 
+.slides-titles > .active:before {
+	content: '';
+	display: inline-block;
+	border-top: 5px solid transparent;
+	border-bottom: 5px solid transparent;
+	border-left: 10px solid #666;
+	margin-right: 5px;
+}
+
+.slider-list > li {
+	display: none;
+}
+
+.slider-list > li.active {
+	display: block;
+}
+
 .slides-titles .slide-title {
 
 }
