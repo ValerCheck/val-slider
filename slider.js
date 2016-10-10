@@ -2,6 +2,7 @@ $(document).ready(function(){
 
 	const img_w = 1021;
 	const img_h = 941;
+	var scale = 1;
 	var cur_w = $('.img_map').width();
 	var cur_h = $('.img_map').height();
 
@@ -125,15 +126,7 @@ $(document).ready(function(){
 
 	const zoomer = 0.1;
 
-
-	function zoom(mul) {
-		map = $('.img_map');
-		var old_width = map.width(), 
-			old_height = map.height();
-		cur_w = old_width * mul;
-		cur_h = old_height * mul;
-		map.width(cur_w);
-		map.height(cur_h);
+	function redrawAreas(){
 		var areas = $('area');
 		areas.toArray().forEach(function(el){
 			var area = $(el);
@@ -142,7 +135,9 @@ $(document).ready(function(){
 			calculateCoords(area,className);
 			setTooltipPosition(className,2,20,0);
 		});
-		
+	}
+
+	function redrawTooltips(){
 		var tooltips = $('.tooltips');
 		$('img.img_map').maphilight({alwaysOn : true,fillOpacity:0.75});
 		$('div.img_map').append(tooltips);
@@ -150,8 +145,29 @@ $(document).ready(function(){
 		if (tooltip.length) tooltip.css({top : (tooltip.offset().top - tooltip.height()/2)})
 	}
 
+	function zoom(mul) {
+		map = $('.img_map');
+		var old_width = map.width(), 
+			old_height = map.height();
+		scale *= mul;
+		cur_w = old_width * mul;
+		cur_h = old_height * mul;
+		if (cur_w <= img.frame.width || cur_h <= img.frame.height) {
+			$('img.img_map').height(img.frame.height);
+			$('img.img_map').width('auto');
+			scale = 1;
+		}
+		map.width(cur_w);
+		map.height(cur_h);
+		redrawAreas();
+		redrawTooltips();
+	}
+
 	function zoomIn(){zoom(1+zoomer);}
-	function zoomOut(){zoom(1-zoomer);}
+	function zoomOut(){zoom(1-zoomer + 0.019);}
+	function resetView(){
+		zoom(1.0/scale);
+	}
 
 	function UpdateCursor(){
 		cursor.x = window.event.clientX;
@@ -204,5 +220,6 @@ $(document).ready(function(){
 	$(document).on('mouseup','.slider-list',stop_drag);
 	$(document).on('click','#zoomout',zoomOut);
 	$(document).on('click','#zoomin',zoomIn);
+	$(document).on('click','#reset',resetView);
 
 });
