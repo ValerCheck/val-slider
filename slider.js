@@ -226,8 +226,11 @@ $(document).ready(function(){
 
 	$(document).on('dragstart','div.img_map',function(){return false;});
 	$(document).on('mousedown','div.img_map',start_drag);
+	$(document).on('touchstart','div.img_map',start_drag);
 	$(document).on('mousemove','.slider-list',while_drag);
+	$(document).on('touchmove','.slider-list',while_drag);
 	$(document).on('mouseup','.slider-list',function(){img.obj = null});
+	$(document).on('touchend','.slider-list',function(){img.obj = null});
 	$(document).on('click','#zoomout',function(){zoom(1-zoomer + 0.019);});
 	$(document).on('click','#zoomin',function(){zoom(1+zoomer);});
 	$(document).on('click','#reset',function(){zoom(1.0/scale);});
