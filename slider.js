@@ -2,7 +2,7 @@ $(document).ready(function(){
 
 	const img_w = 1021;
 	const img_h = 941;
-	var scale = 1,scales = [];
+	var scale = 1,scales = [],slideNumbers=[],currentSlide;
 	$('.slider-list > li:first-child').addClass('active');
 	
 	var controls = $("<div class='slider-controls'></div>")
@@ -15,7 +15,13 @@ $(document).ready(function(){
 	$('.slider-list > li').toArray().forEach(function(el){
 		var newLi = $('<li></li>');
 		newLi = newLi.append($(el).find('.slide-title')).data('slide-number',$(el).data('slide-number'));
-		if ($(el).hasClass('active')) newLi.addClass('active');
+		slideNumbers.push({
+			active : $(el).hasClass('active'),
+			number : $(el).data('slide-number')
+		});
+		if ($(el).hasClass('active')) {
+			newLi.addClass('active');
+		}
 		newLi.appendTo('.slides-titles');
 		scales.push(1);
 	});
@@ -187,6 +193,10 @@ $(document).ready(function(){
 	function updateControlsStatus(mul){
 		if (scale * mul < 1) $('#zoomout').attr('disabled','disabled');
 		else $('#zoomout').removeAttr('disabled');
+	}
+
+	function slideShowStart(){
+
 	}
 
 	function zoom(mul) {
