@@ -7,25 +7,28 @@ $(document).ready(function(){
 		fillColor: '0168c4',
 		strokeColor : '000000',
 		strokeWidth : 1,
-        fillOpacity: 1,
-        stroke : true,
-        scaleMap : true,
-        isDeselectable: true
+        //fillOpacity: 1,
+        //stroke : true,
+        scaleMap : false,
+        isSelectable: false
 	};
 
 	var data = [{
 		set : 1,
-		title : 'Georgia State University'
+		title : 'Georgia State University',
+		imageUrl : './images/map.png'
 	},{
 		set: 2,
+		imageUrl : './images/map-1.png',
 		points : [
 			{
-				data : [524.2,458,542,438.3,570.8,461,554,483.5]
+				data : [525,463,545,436,575,461,553,485,536,473]
 			}
 		],
 		title : 'Georgia State University 1940'
 	},{
 		set: 3,
+		imageUrl : './images/map-2.png',
 		points : [
 			{
 				data : [569.3,482,599,446.9,622.8,467.9,593,503.1]
@@ -34,6 +37,7 @@ $(document).ready(function(){
 		title : 'Georgia State University 1950'
 	},{
 		set: 4,
+		imageUrl : './images/map-3.png',
 		points : [
 			{ data : [475,535.5,494,512,520,535.5,499.5,555] },
 			{ data : [525,535,555,498,585,521,555,558] },
@@ -43,6 +47,7 @@ $(document).ready(function(){
 		title : 'Georgia State University Campus 1960'
 	},{
 		set: 5,
+		imageUrl : './images/map-4.png',
 		points : [
 			{ data : [546,433.6,562.6,415,589,438,572.3,456] },
 			{ data : [502,497,526.2,470,546,486.5,521,514] },
@@ -57,7 +62,46 @@ $(document).ready(function(){
 			{ data : [727.5,605.5,750.5,580.5,762.9,593.5,740.8,617.6], fillColor : '000000'}
 		],
 		title : 'Georgia State University Campus 1970'
+	},{
+		set : 6,
+		imageUrl : './images/map-5.png',
+		points : [
+			{ data: [388.5,476.9,411,448.8,430.5,464,408.2,492.2] },
+			{ data: [487.5,454.8,510,426.8,529.5,442.2,507.8,470.2] },
+			{ data: [515.8,566.9,531.3,550.1,543.2,561,527.9,577.9] },
+			{ data: [604,519,615.5,505,635,522,623,536] },
+			{ data: [647,465.5,682.5,427,711,451.7,675.4,490] },
+			{ data: [748.6,392.6,748.6,371.4,763.8,371.4,763.8,392.6] },
+			{ data: [856,395,856,368,875,368,875,395] }
+		],
+		title : 'Georgia State University Campus 1980'
+	},{
+		set : 7,
+		imageUrl : './images/map-6.png',
+		points : [
+			//{ data: [474,473,488,446,453,424,439,447] },
+			//{ data: [392,421,407,399,427,398,408,432] }
+		],
+		title : 'Georgia State University Campus 1990'
 	}];
+
+	var ScaleArrayOfValues = function(arr) {
+		return arr.reduce(function(res,el,i,arr) {
+			res += (i % 2) ? (cur_h*el/img_h) : (cur_w*el/img_w);
+			res += ((i < (arr.length - 1)) ? "," : "");
+			return res;
+		},"");
+	}
+
+	var ScaleCoordinates = function(data) {
+		if (data) return ScaleArrayOfValues(data);
+		$('.slider-list > .active area')
+		.toArray()
+		.forEach(function(area){
+			var values = $(area).attr('coords').split(',');
+			$(area).attr('coords',ScaleCoordinates(values));
+		});
+	}
 
 	var controls = 
 	$("<div class='slider-controls'></div>")
@@ -82,7 +126,7 @@ $(document).ready(function(){
 		if (!data[number].points) return;
 		return $.map(data[number].points,function(point){
 			return ($("<area shape='poly' href='#'/>")
-			.attr('coords',point.data.join(",")));
+			.attr('coords',ScaleCoordinates(point.data)));//.join(",")));
 		});
 	}
 
@@ -94,9 +138,11 @@ $(document).ready(function(){
 			return $(slide).data('slide-number') == number;
 		})[0];
 
+		var imageUrl = data.filter(function(el){ return el.set == number; })[0].imageUrl;
+
 		var map = $(slide).children('map');
 		map = map.length ? $(map[0]) : ($("<map></map>").attr({id:'map-'+number,name:'map-'+number}));
-		$(slide).children('img').attr({id:'img-map-'+number,usemap:'#'+map.attr('name')});
+		$(slide).children('img').attr({id:'img-map-'+number,usemap:'#'+map.attr('name'),src:(imageUrl)});
 
 		if (!$(slide).children('map').length) $(slide).prepend(map);
 
@@ -139,9 +185,6 @@ $(document).ready(function(){
 	GenerateAllMapAreas();
 	GenerateAllTitles();
 
-	$('.slider-list > li.active img.img_map').mapster(mapOptions);
-    $('area').mapster('set',true);
-
 	var areas = $('area');
 	var areasPoints = {};
 
@@ -159,7 +202,8 @@ $(document).ready(function(){
 			left   : 0,
 			top    : 0,
 			right  : 0,
-			bottom : 0
+			bottom : 0,
+			scale  : 0
 		},
 		img = {
 			frame  : {
@@ -204,7 +248,7 @@ $(document).ready(function(){
 
 		var active = $('.slider-list .active');
 		active.removeClass('active');
-		active.find('.img_map:not(.mapster_el)').mapster('unbind');
+		//active.find('.img_map:not(.mapster_el)').mapster('unbind');
 
 		setTimeout(function(){
 			var number = slideNumbers[prevActive.next].number;
@@ -212,29 +256,76 @@ $(document).ready(function(){
 			$('.slider-list [data-slide-number=' + number + ']').addClass('active');
 			var elem = $('.slides-titles > li').toArray().filter(function(el){return $(el).data('slide-number')==number;});
 			$(elem).addClass('active');
-			$('.active .img_map:not(.mapster_el').mapster(mapOptions);
-			$('area').mapster('set',true);
 			setTimeout(slideShowStart,6000);
 		},250);
 
 	}
 
+	$.fn.extend({
+		valSlider : function() {
+			var args = [].slice.call(arguments);
+			var ScaleArrayOfValues = function(arr,scale) {
+				return arr.reduce(function(res,el,i,arr) {
+					res += (i % 2) ? el*scale : el*scale;
+					res += ((i < (arr.length - 1)) ? "," : "");
+					return res;
+				},"");
+			}
+			var ScaleCoordinates = function(data,scale) {
+				if (data) return ScaleArrayOfValues(data,scale);
+				$('.slider-list > .active area')
+				.toArray()
+				.forEach(function(area){
+					var values = $(area).attr('coords').split(',');
+					debugger;
+					$(area).attr('coords',ScaleCoordinates(values,scale));
+				});
+			}
+			var command = args[0];
+			args = args.slice(1);
+			switch(command){
+				case 'resize' :
+					$(this).css({width:args[0].width,height:args[0].height});
+					ScaleCoordinates(null,args[0].scale);
+					break;
+			}
+		}
+	});
+
+	function ResizeImage(img,width,height) {
+
+	}
+
 	function zoom(mul) {
+		//ScaleCoordinates();
 		var map = $('.active .img_map');
-		var old_width = map.width(), 
-			old_height = map.height(),
-			index = $('.slider-list .active').data('slide-number');
+		var old = {
+			width : map.width(),
+			height : map.height(),
+			scale : scale
+		}
+		var index = $('.slider-list .active').data('slide-number');
 		scale *= mul;
-		cur_w = old_width * mul;
-		cur_h = old_height * mul;
+		cur_w = old.width * mul;
+		cur_h = old.height * mul;
 		if (scale == 1 || cur_w <= img.frame.width || cur_h <= img.frame.height) {
-			$('.active [id^=mapster]').css({top : 0, left : 0});
-			$('.active .img_map:not(.mapster_el)').mapster('resize',img.frame.width,img.frame.height);
-			UpdateControlsStatus(mul);
 			scale = 1;
+			$('.active [id^=mapster]').css({top : 0, left : 0});
+			$('.active .img_map').valSlider('resize',{
+				width : img.frame.width,
+				height : img.frame.height,
+				scale : mul
+			});
+			//$('.active .img_map:not(.mapster_el)').mapster('resize',img.frame.width,img.frame.height);
+			UpdateControlsStatus(mul);
 			return;
 		}
-		$('.active .img_map:not(.mapster_el)').mapster('resize',cur_w,cur_h);
+		$('.active .img_map').valSlider('resize',{
+			width : cur_w,
+			height : cur_h,
+			scale : mul
+		});
+		//$('.active .img_map:not(.mapster_el)').mapster('resize',cur_w,cur_h);
 		UpdateControlsStatus(mul);
 	}
 
@@ -305,13 +396,13 @@ $(document).ready(function(){
 			setTimeout(function(){
 				scale = 1;
 				target.addClass('active');
-				$('.active .img_map:not(.mapster_el)').mapster('resize',img.frame.width*scale,img.frame.height*scale);
+				//$('.active .img_map:not(.mapster_el)').mapster('resize',img.frame.width*scale,img.frame.height*scale);
 				UpdateControlsStatus();
 				
 			},250);
 			if (!target.find('div.img_map').length) {
-				target.find('img.img_map').mapster(mapOptions);
-				$('area').mapster('set',true);
+				//target.find('img.img_map').mapster(mapOptions);
+				//$('area').mapster('set',true);
 			}
 		}
 	});
