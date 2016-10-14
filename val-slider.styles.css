@@ -53,10 +53,21 @@ body {
 	padding-left: 0;
 }
 
+.slides-titles > li:hover {
+	cursor: pointer;
+	background-color: #e0e0e0;
+}
+
 .slides-titles > li {
 	list-style: none;
 	padding: 10px 0 5px 10px;
 	border-bottom: 1px solid #c4c4c4;
+	-webkit-transition: all 0.2s;
+	transition: all 0.2s;
+}
+
+.slides-titles > .active {
+	background-color: #ccc;
 }
 
 .slides-titles > .active:before {

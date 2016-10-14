@@ -2,137 +2,148 @@ $(document).ready(function(){
 
 	const img_w = 1021;
 	const img_h = 941;
-	var scale = 1,scales = [],slideNumbers=[],currentSlide;
-	$('.slider-list > li:first-child').addClass('active');
-	
-	var controls = $("<div class='slider-controls'></div>")
-					.append($("<input type='button' class='zoomout button' value='Zoom out'>"))
-					.append($("<input type='button' class='zoomin button' value='Zoom in'>"))
-					.append($("<input type='button' class='reset button' value='Reset'>"));
-
-
-	$('.slider-list > li').addClass('val-slide');
-	$('.slider-list > li').toArray().forEach(function(el){
-		var newLi = $('<li></li>');
-		newLi = newLi.append($(el).find('.slide-title')).data('slide-number',$(el).data('slide-number'));
-
-		slideNumbers.push({
-			number : $(el).data('slide-number'),
-			active : $(el).hasClass('active')
-		});
-		if ($(el).hasClass('active')) {
-			newLi.addClass('active');
-		}
-		newLi.appendTo('.slides-titles');
-		scales.push(1);
-	});
-
-	var options = {
-        singleSelect: true,
-        isDeselectable: false,
-        fill: true,
-        fillColor: 'ffff00',
-        fillOpacity: 0.9
-    };
-
-	var cur_w = $('.slider-list > .active >:first-child').width();
-	var cur_h = $('.slider-list > .active >:first-child').height();
-
-	function closePoly(arr) {
-		if (!arr.length) return;
-		arr.push(arr[0]);
-		return arr;
-	}
-
-	var yearPoints = {
-		'map-2':[
-			function(){
-				return closePoly([coords(524.2,458),coords(542,438.3),coords(570.8,461),coords(554,483.5)]);
-			},
-		],
-		'map-3':[
-			function(){
-				return closePoly([coords(524.2,458),coords(542,438.3),coords(570.8,461),coords(554,483.5)]);
-			},
-			function(){
-				return closePoly([coords(569.3,482),coords(599,446.9),coords(622.8,467.9),coords(593,503.1)]);
-			}
-		],
-		'map-4':[
-			function(){
-				return closePoly([coords(524.2,458),coords(542,438.3),coords(570.8,461),coords(554,483.5)]);
-			},
-			function(){
-				return closePoly([coords(569.3,482),coords(599,446.9),coords(622.8,467.9),coords(593,503.1)]);
-			},
-			function(){
-				return closePoly([coords(475,535.5),coords(494,512),coords(520,535.5),coords(499.5,555)]);
-			},
-			function(){
-				return closePoly([coords(525,535),coords(555,498),coords(585,521),coords(555,558)]);
-			},
-			function(){
-				return closePoly([coords(568,557),coords(595.5,523),coords(623,544),coords(595.5,578)]);
-			},
-			function(){
-				return closePoly([coords(517,615.5),coords(526.5,603),coords(543,615.5),coords(534,628)]);
-			}
-		]
-	}
-
-	function get_x(x){
-		return cur_w*x/img_w;
-		return x;
-	}
-
-	function get_y(y){
-		//return y;
-		return cur_h*y/img_h;
-	}
-
-	function coords(x,y) {
-		return get_x(x) + "," + get_y(y);
-	}
-
-	$('area')
-	//.data('maphilight',{"fillColor":"0168c4","strokeColor":"000000",'strokeWidth':1,"strokeOpacity":0.75})
-	.toArray()
-	.forEach(function(el){
-		var a = $(el);
-		a.attr('coords',yearPoints[a.parent().attr('id')][a.data('number')-1]().join(","));
-	});
-
+	var scale = 1,slideNumbers=[],currentSlide,lastSlideNumber = 0;
 	var mapOptions = {
 		fillColor: '0168c4',
 		strokeColor : '000000',
 		strokeWidth : 1,
         fillOpacity: 1,
         stroke : true,
-        scaleMap : false
+        scaleMap : true,
+        isDeselectable: true
 	};
+
+	var data = [{
+		set : 1,
+		title : 'Georgia State University'
+	},{
+		set: 2,
+		points : [
+			{
+				data : [524.2,458,542,438.3,570.8,461,554,483.5]
+			}
+		],
+		title : 'Georgia State University 1940'
+	},{
+		set: 3,
+		points : [
+			{
+				data : [569.3,482,599,446.9,622.8,467.9,593,503.1]
+			}
+		],
+		title : 'Georgia State University 1950'
+	},{
+		set: 4,
+		points : [
+			{ data : [475,535.5,494,512,520,535.5,499.5,555] },
+			{ data : [525,535,555,498,585,521,555,558] },
+			{ data : [568,557,595.5,523,623,544,595.5,578] },
+			{ data : [517,615.5,526.5,603,543,615.5,534,628] }
+		],
+		title : 'Georgia State University Campus 1960'
+	},{
+		set: 5,
+		points : [
+			{ data : [546,433.6,562.6,415,589,438,572.3,456] },
+			{ data : [502,497,526.2,470,546,486.5,521,514] },
+			{ data : [534.8,581.3,551.2,564.1,563.2,575.4,546.7,592.9] },
+			{ data : [550.1,598.6,571.1,576.8,602.9,604.8,582.2,626.2] },
+			{ data : [589,630.7,609,608,625,623,604.5,645] },
+			{ data : [610,584.8,621.3,572,639,588.3,627.6,601] },
+			{ data : [628,569.9,643.5,552,668,574.5,652.8,592] },
+			{ data : [620,553.5,625.5,547,635,555.5,629.5,562] },
+			{ data : [666.9,637,701.3,599.3,714,611.6,679.7,649.2], fillColor : '000000'},
+			{ data : [686.9,655,721.7,617.3,734,629.6,700.1,667.2], fillColor : '000000'},
+			{ data : [727.5,605.5,750.5,580.5,762.9,593.5,740.8,617.6], fillColor : '000000'}
+		],
+		title : 'Georgia State University Campus 1970'
+	}];
+
+	var controls = 
+	$("<div class='slider-controls'></div>")
+	.append($("<input type='button' class='zoomout button' value='Zoom out'>"))
+	.append($("<input type='button' class='zoomin button' value='Zoom in'>"))
+	.append($("<input type='button' class='reset button' value='Reset'>"));
+
+	$('.slider-list > li:first-child').addClass('active');
+
+	var cur_w = $('.slider-list > .active >:first-child').width();
+	var cur_h = $('.slider-list > .active >:first-child').height();
+
+	function GenerateSlideTitleElement(dataset,options){
+		$('<li></li>')
+		.append("<span class='slide-title'>"+dataset.title+"</span>")
+		.data('slide-number',options.number)
+		.addClass((options.active ? 'active' : ''))
+		.appendTo('.slides-titles');
+	}
+
+	function SetCoordsToMaps(number) {
+		if (!data[number].points) return;
+		return $.map(data[number].points,function(point){
+			return ($("<area shape='poly' href='#'/>")
+			.attr('coords',point.data.join(",")));
+		});
+	}
+
+	function GenerateSlideMapAreas(number,stack = true) {
+		var slide = 
+		$('.slider-list > li')
+		.toArray()
+		.filter(function(slide){
+			return $(slide).data('slide-number') == number;
+		})[0];
+
+		var map = $(slide).children('map');
+		map = map.length ? $(map[0]) : ($("<map></map>").attr({id:'map-'+number,name:'map-'+number}));
+		$(slide).children('img').attr({id:'img-map-'+number,usemap:'#'+map.attr('name')});
+
+		if (!$(slide).children('map').length) $(slide).prepend(map);
+
+		var areas = [];
+
+		if (stack) for (var i = 0; i < number; i++) areas = areas.concat(SetCoordsToMaps(i));
+		else areas = SetCoordsToMaps(number);
+
+		$(slide)
+		.children('map')
+		.append(areas);
+	}
+
+	function GenerateAllMapAreas() {
+		$('.slider-list > li')
+		.toArray()
+		.map(function(slide,id){
+			$(slide).data('slide-number',id + 1);
+			if (id + 1 > lastSlideNumber) lastSlideNumber = id + 1;
+		});
+		for (var i = 1; i < lastSlideNumber + 1; i++) 
+			GenerateSlideMapAreas(i);
+	}
+
+	function GenerateAllTitles() {
+		$('.slider-list > li')
+		.addClass('val-slide')
+		.toArray()
+		.forEach(function(slide,id){
+			var options = {
+				number : $(slide).data('slide-number'),
+				active : $(slide).hasClass('active')
+			}
+			var dataset = data.filter(function(record){return record.set == options.number;})[0];
+			GenerateSlideTitleElement(dataset,options);
+			slideNumbers.push(options);
+		});
+	}
+
+	GenerateAllMapAreas();
+	GenerateAllTitles();
 
 	$('.slider-list > li.active img.img_map').mapster(mapOptions);
     $('area').mapster('set',true);
 
 	var areas = $('area');
 	var areasPoints = {};
-
-	function calculateCoords(area,className){
-		var pts =  [];
-		var p = {};
-		area.attr('coords').split(',').forEach(function(el,i){
-			if (i % 2 == 0 && !p.x) p.x = parseFloat(el);
-			else if (i % 2 == 1 && !p.y) p.y = parseFloat(el);
-			if (p.x && p.y) {
-				pts.push(p);
-				p = {};
-			}
-		});
-		areasPoints[className] = {
-			className : className,
-			points 	  : pts
-		};
-	}
 
 	function setTooltipPosition(className,p,xd,yd){
 		var tooltip = $(className);
@@ -142,26 +153,6 @@ $(document).ready(function(){
 		});
 		return tooltip;
 	}
-
-	areas.toArray().forEach(function(elem){
-		var tooltips = $('.tooltips');
-		var parent = tooltips.parent().find('div.img_map');
-		if (parent.length) parent.append(tooltips);
-		var area = $(elem);
-		$("#" + area.parent().attr('id') + " #" + area.attr('id')).click(function(e){
-			e.preventDefault();
-			var className = "." + [area.parent().attr('id'),area.attr('id')].join("_").replace(/\-/g,"_");
-			if (!areasPoints[className]) calculateCoords(area,className);
-			var tooltip = setTooltipPosition(className,2,20,0);
-			var isActive = false;
-			if (tooltip.hasClass('active')) isActive = true;
-			$('.tooltip.active').removeClass('active');
-			if (isActive) return;
-			tooltip.toggleClass('active').css({top : (tooltip.offset().top - tooltip.height()/2 - $('.img_map').offset().top)});
-		});
-	})
-
-	var tooltips = $('.tooltips');
 
 	var cursor = { x : 0, y : 0 },
 		delta = {
@@ -184,17 +175,6 @@ $(document).ready(function(){
 
 	const zoomer = 0.1;
 
-	function redrawAreas(){
-		var areas = $('area');
-		areas.toArray().forEach(function(el){
-			var area = $(el);
-			area.attr('coords',yearPoints[area.parent().attr('id')][area.data('number')-1]().join(","));
-			var className = "." + [area.parent().attr('id'),area.attr('id')].join("_").replace(/\-/g,"_");
-			calculateCoords(area,className);
-			setTooltipPosition(className,2,20,0);
-		});
-	}
-
 	function redrawTooltips(){
 		var tooltips = $('.tooltips');
 		$('div.img_map').append(tooltips);
@@ -202,9 +182,9 @@ $(document).ready(function(){
 		if (tooltip.length) tooltip.css({top:(tooltip.position().top - (tooltip.height()/2))});
 	}
 
-	function updateControlsStatus(mul){
-		if (scale * mul < 1) $('#zoomout').attr('disabled','disabled');
-		else $('#zoomout').removeAttr('disabled');
+	function UpdateControlsStatus(mul = 1){
+		if (scale * mul < 1 || scale == 1) $('.zoomout').attr('disabled','disabled');
+		else $('.zoomout').removeAttr('disabled');
 	}
 
 	function slideShowStart(){
@@ -233,7 +213,6 @@ $(document).ready(function(){
 			var elem = $('.slides-titles > li').toArray().filter(function(el){return $(el).data('slide-number')==number;});
 			$(elem).addClass('active');
 			$('.active .img_map:not(.mapster_el').mapster(mapOptions);
-			//$('.active .img_map:not(.mapster_el)').mapster('resize',img.frame.width*scale,img.frame.height*scale);
 			$('area').mapster('set',true);
 			setTimeout(slideShowStart,6000);
 		},250);
@@ -241,23 +220,22 @@ $(document).ready(function(){
 	}
 
 	function zoom(mul) {
-		var map = $('.img_map');
+		var map = $('.active .img_map');
 		var old_width = map.width(), 
 			old_height = map.height(),
 			index = $('.slider-list .active').data('slide-number');
-		//scales[index - 1] = scales[index - 1] mul;
 		scale *= mul;
 		cur_w = old_width * mul;
 		cur_h = old_height * mul;
 		if (scale == 1 || cur_w <= img.frame.width || cur_h <= img.frame.height) {
 			$('.active [id^=mapster]').css({top : 0, left : 0});
 			$('.active .img_map:not(.mapster_el)').mapster('resize',img.frame.width,img.frame.height);
-			updateControlsStatus(mul);
+			UpdateControlsStatus(mul);
 			scale = 1;
 			return;
 		}
 		$('.active .img_map:not(.mapster_el)').mapster('resize',cur_w,cur_h);
-		updateControlsStatus(mul);
+		UpdateControlsStatus(mul);
 	}
 
 	function UpdateCursor(event){
@@ -266,7 +244,7 @@ $(document).ready(function(){
 		cursor.y = event.clientY;
 	}
 
-	function start_drag(event) {
+	function StartDrag(event) {
 		UpdateCursor(event);
 		img.obj 	= $('.active [id^=mapster]');
 		img.left 	= $('.active [id^=mapster]').position().left;
@@ -279,45 +257,36 @@ $(document).ready(function(){
 		delta.top 		= cursor.y - img.top;
 	}
 
-	function while_drag(event) {
+	function HandleBorders(props) {
+		[
+			{ pos : 'left', len : 'width'},
+			{ pos : 'top' , len : 'height'}
+		].forEach(function(obj){
+			if (props[obj.pos] > 0) props[obj.pos] = 0;
+			else if (props[obj.pos] + img[obj.len] <= img.frame[obj.pos] + img.frame[obj.len])
+				props[obj.pos] = img.frame[obj.len] - img[obj.len];
+		});
+		return props;
+	}
+
+	function WhileDrag(event) {
 		UpdateCursor(event);
-        if (img.obj !== null) {
-           	
-           	var props = {
-           		left : cursor.x - delta.left,
-           		top  : cursor.y - delta.top
-           	}
-
-           	if (props.left > 0) props.left = 0;
-           	else if (props.left + img.width <= img.frame.left + img.frame.width) 
-           		props.left = img.frame.width - img.width;
-           	if (props.top > 0) props.top = 0;
-           	else if (props.top + img.height <= img.frame.top + img.frame.height)
-           		props.top = img.frame.height - img.height;
-
-           	$(img.obj).css({
-           		top  : props.top,
-           		left : props.left
-           	});
-        }
+		if (img.obj === null) return;
+    	var props = HandleBorders({
+       		left : cursor.x - delta.left,
+       		top  : cursor.y - delta.top
+       	});
+       	$(img.obj).css(props);
 	}
 
-	//$('.slider-controls').appendTo('.val-slide');
 	controls.appendTo('.val-slide');
-	$('#zoomout').attr('disabled','disabled');
-
-	function valSliderStart(){
-		var slideNumbers = $('.slider-list > li').toArray().map(function(el){
-			return $(el).data('slide-number');
-		})
-	}
+	$('.zoomout').attr('disabled','disabled');
 
 	$(document).on('dragstart','.active [id^=mapster]',function(){return false;});
-
-	$(document).on('mousedown','.active [id^=mapster]',start_drag);
-	$(document).on('touchstart','div.img_map',start_drag);
-	$(document).on('mousemove','.slider-list',while_drag);
-	$(document).on('touchmove','.slider-list',while_drag);
+	$(document).on('mousedown','.active [id^=mapster]',StartDrag);
+	$(document).on('touchstart','.active [id^=mapster]',StartDrag);
+	$(document).on('mousemove','.slider-list',WhileDrag);
+	$(document).on('touchmove','.slider-list',WhileDrag);
 	$(document).on('mouseup','.slider-list',function(){img.obj = null});
 	$(document).on('touchend','.slider-list',function(){img.obj = null});
 	$(document).on('click','.slides-titles > li',function(e){
@@ -334,9 +303,10 @@ $(document).ready(function(){
 		if (target.length) {
 			target = $(target[0]);
 			setTimeout(function(){
-				//scale = 1;
+				scale = 1;
 				target.addClass('active');
 				$('.active .img_map:not(.mapster_el)').mapster('resize',img.frame.width*scale,img.frame.height*scale);
+				UpdateControlsStatus();
 				
 			},250);
 			if (!target.find('div.img_map').length) {
@@ -349,6 +319,6 @@ $(document).ready(function(){
 	$(document).on('click','.zoomin',function(){zoom(1+zoomer);});
 	$(document).on('click','.reset',function(){zoom(1.0/scale);});
 	
-	setTimeout(slideShowStart,6000);
+	//setTimeout(slideShowStart,6000);
 
 });
