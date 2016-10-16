@@ -246,11 +246,8 @@ $(document).ready(function(){
 
 	var cursor = { x : 0, y : 0 },
 		delta = {
-			left   : 0,
-			top    : 0,
-			right  : 0,
-			bottom : 0,
-			scale  : 0
+			left   : 0, top    : 0,
+			right  : 0, bottom : 0
 		},
 		img = {
 			frame  : {
@@ -264,6 +261,49 @@ $(document).ready(function(){
 			height : 0
 		};
 
+	var SetCursorXY = function(x,y) {
+		cursor.x = x;
+		cursor.y = y;
+	}
+
+	var Update = {
+		Cursor : function(event) {
+			event = window.event || event;
+			SetCursorXY(event.clientX,event.clientY);	
+		},
+		Touch : function(event) {
+			var touch = event.originalEvent.touches[0];
+			SetCursorXY(touch.pageX,touch.pageY);
+		},
+		ImageValues : function() {
+			var imgMap = $('.active .img_map');
+			var pos = imgMap.position();
+			img.obj 	= imgMap;
+			img.left 	= pos.left;
+			img.top 	= pos.top;
+			img.width 	= imgMap.width();
+			img.height 	= imgMap.height();
+		},
+		DeltaValues : function() {
+			delta.left 		= (cursor.x - img.left) || 0;
+			delta.top 		= (cursor.y - img.top) || 0;
+			delta.width 	= img.left + img.width;
+			delta.height 	= img.top + img.height;
+		},
+		ImageObjectPosition : function() {
+			if (img.obj === null) return;
+	       	$(img.obj).css(HandleBorders({
+	       		left : cursor.x - delta.left,
+	       		top  : cursor.y - delta.top
+	       	}));
+		},
+		ControlsStatus : function(mul) {
+			if (mul === undefined) mul = 1;
+			if (scale * mul < 1 || scale == 1) $('.zoomout').attr('disabled','disabled');
+			else $('.zoomout').removeAttr('disabled');
+		}
+	}
+
 	const zoomer = 0.1;
 
 	function redrawTooltips(){
@@ -271,12 +311,6 @@ $(document).ready(function(){
 		$('div.img_map').append(tooltips);
 		var tooltip = $('.tooltip.active');
 		if (tooltip.length) tooltip.css({top:(tooltip.position().top - (tooltip.height()/2))});
-	}
-
-	function UpdateControlsStatus(mul){
-		if (mul === undefined) mul = 1;
-		if (scale * mul < 1 || scale == 1) $('.zoomout').attr('disabled','disabled');
-		else $('.zoomout').removeAttr('disabled');
 	}
 
 	function slideShowStart(){
@@ -325,7 +359,6 @@ $(document).ready(function(){
 				.toArray()
 				.forEach(function(area){
 					var values = $(area).attr('coords').split(',');
-					debugger;
 					$(area).attr('coords',ScaleCoordinates(values,scale));
 				});
 			}
@@ -343,61 +376,37 @@ $(document).ready(function(){
 	function zoom(mul) {
 		
 		var map = $('.active .img_map');
-		var old = {
-			width : map.width(),
-			height : map.height(),
-			scale : scale
-		}
-		var index = $('.slider-list .active').data('slide-number');
 		scale *= mul;
-		cur_w = old.width * mul;
-		cur_h = old.height * mul;
-		if (scale == 1 || cur_w <= img.frame.width || cur_h <= img.frame.height) {
-			scale = 1;
-			$('.active .img_map').css({top : 0, left : 0});
-			$('.active .img_map').valSlider('resize',{
-				width : img.frame.width,
-				height : img.frame.height,
-				scale : mul
-			});
-			
-			UpdateControlsStatus(mul);
-			return;
-		}
-		$('.active .img_map').valSlider('resize',{
-			width : cur_w,
-			height : cur_h,
-			scale : mul
-		});
-		
-		UpdateControlsStatus(mul);
-	}
 
-	function UpdateCursor(event){
-		event = window.event || event;
-		if (event.type == "touchmove") {
-			var touch = event.originalEvent.touches[0];
-			cursor.x = touch.clientX;
-			cursor.y = touch.clientY;
-			return;
+		var current = {
+			width 	: map.width() * mul,
+			height 	: map.height() * mul,
+			scale 	: mul
 		}
-		cursor.x = event.clientX;
-		cursor.y = event.clientY;
+
+		if (current.width <= img.frame.width || current.height <= img.frame.height || scale == 1) {
+			scale = 1;
+			map.css({top : 0, left : 0});
+			current.width = img.frame.width;
+			current.height = img.frame.height;
+		}
+
+		map.valSlider('resize',current);
+		
+		Update.ControlsStatus(mul);
 	}
 
 	function StartDrag(event) {
-		if (event.type == "touchstart") event.preventDefault();
-		UpdateCursor(event);
-		var imgMap = $('.active .img_map');
-		img.obj 	= imgMap;
-		img.left 	= imgMap.position().left;
-		img.top 	= imgMap.position().top;
-		img.width 	= imgMap.width();
-		img.height 	= imgMap.height();
-		delta.left 	= cursor.x - img.left;
-		delta.width 	= img.left + img.width;
-		delta.height 	= img.top + img.height;
-		delta.top 		= cursor.y - img.top;
+		Update.Cursor(event);
+		Update.ImageValues();
+		Update.DeltaValues();
+	}
+
+	function StartTouchDrag(event) {
+		event.preventDefault();
+		Update.Touch(event);
+		Update.ImageValues();
+		Update.DeltaValues();
 	}
 
 	function HandleBorders(props) {
@@ -413,14 +422,13 @@ $(document).ready(function(){
 	}
 
 	function WhileDrag(event) {
-		UpdateCursor(event);
-		if (img.obj === null) return;
-    	var props = HandleBorders({
-       		left : cursor.x - delta.left,
-       		top  : cursor.y - delta.top
-       	});
-       	//alert(JSON.stringify(props));
-       	$(img.obj).css(props);
+		Update.Cursor(event);
+		Update.ImageObjectPosition();       	
+	}
+
+	function WhileTouchDrag(event) {
+		Update.Touch(event);
+		Update.ImageObjectPosition();
 	}
 
 	controls.appendTo('.val-slide');
@@ -428,9 +436,9 @@ $(document).ready(function(){
 
 	$(document).on('dragstart','.active .img_map',function(){return false;});
 	$(document).on('mousedown','.active .img_map',StartDrag);
-	$(document).on('touchstart','.active .img_map',StartDrag);
+	$(document).on('touchstart','.active .img_map',StartTouchDrag);
 	$(document).on('mousemove','.slider-list',WhileDrag);
-	$(document).on('touchmove','.slider-list',WhileDrag);
+	$(document).on('touchmove','.slider-list',WhileTouchDrag);
 	$(document).on('mouseup','.slider-list',function(){img.obj = null});
 	$(document).on('touchend','.slider-list',function(){img.obj = null});
 	$(document).on('click','.slides-titles > li',function(e){
@@ -448,7 +456,7 @@ $(document).ready(function(){
 			setTimeout(function(){
 				scale = 1;
 				target.addClass('active');
-				UpdateControlsStatus();
+				Update.ControlsStatus();
 				
 			},250);
 		}
