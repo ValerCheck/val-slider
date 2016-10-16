@@ -358,7 +358,7 @@ $(document).ready(function(){
 		cur_h = old.height * mul;
 		if (scale == 1 || cur_w <= img.frame.width || cur_h <= img.frame.height) {
 			scale = 1;
-			$('.active [id^=mapster]').css({top : 0, left : 0});
+			$('.active .img_map').css({top : 0, left : 0});
 			$('.active .img_map').valSlider('resize',{
 				width : img.frame.width,
 				height : img.frame.height,
@@ -384,12 +384,13 @@ $(document).ready(function(){
 	}
 
 	function StartDrag(event) {
+		if (event.type == "touchstart") event.preventDefault();
 		UpdateCursor(event);
-		img.obj 	= $('.active [id^=mapster]');
-		img.left 	= $('.active [id^=mapster]').position().left;
-		img.top 	= $('.active [id^=mapster]').position().top;
-		img.width 	= $('.active [id^=mapster]').width();
-		img.height 	= $('.active [id^=mapster]').height();
+		img.obj 	= $('.active .img_map');
+		img.left 	= $('.active .img_map').position().left;
+		img.top 	= $('.active .img_map').position().top;
+		img.width 	= $('.active .img_map').width();
+		img.height 	= $('.active .img_map').height();
 		delta.left 	= cursor.x - img.left;
 		delta.width 	= img.left + img.width;
 		delta.height 	= img.top + img.height;
@@ -421,9 +422,9 @@ $(document).ready(function(){
 	controls.appendTo('.val-slide');
 	$('.zoomout').attr('disabled','disabled');
 
-	$(document).on('dragstart','.active [id^=mapster]',function(){return false;});
-	$(document).on('mousedown','.active [id^=mapster]',StartDrag);
-	$(document).on('touchstart','.active [id^=mapster]',StartDrag);
+	$(document).on('dragstart','.active .img_map',function(){return false;});
+	$(document).on('mousedown','.active .img_map',StartDrag);
+	$(document).on('touchstart','.active .img_map',StartDrag);
 	$(document).on('mousemove','.slider-list',WhileDrag);
 	$(document).on('touchmove','.slider-list',WhileDrag);
 	$(document).on('mouseup','.slider-list',function(){img.obj = null});
