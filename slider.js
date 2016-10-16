@@ -169,11 +169,15 @@ $(document).ready(function(){
 		if (!data[number].points) return;
 		return $.map(data[number].points,function(point){
 			return ($("<area shape='poly' href='#'/>")
-			.attr('coords',ScaleCoordinates(point.data)));//.join(",")));
+			.attr({
+				coords : ScaleCoordinates(point.data),
+				onclick : 'alert("Hello")'
+			}));
 		});
 	}
 
-	function GenerateSlideMapAreas(number,stack = true) {
+	function GenerateSlideMapAreas(number,stack) {
+		if (stack === undefined) stack = true;
 		var slide = 
 		$('.slider-list > li')
 		.toArray()
@@ -206,7 +210,7 @@ $(document).ready(function(){
 			$(slide).data('slide-number',id + 1);
 			if (id + 1 > lastSlideNumber) lastSlideNumber = id + 1;
 		});
-		for (var i = 1; i < lastSlideNumber + 1; i++) 
+		for (var i = 1; i < lastSlideNumber; i++) 
 			GenerateSlideMapAreas(i);
 	}
 
@@ -269,7 +273,8 @@ $(document).ready(function(){
 		if (tooltip.length) tooltip.css({top:(tooltip.position().top - (tooltip.height()/2))});
 	}
 
-	function UpdateControlsStatus(mul = 1){
+	function UpdateControlsStatus(mul){
+		if (mul === undefined) mul = 1;
 		if (scale * mul < 1 || scale == 1) $('.zoomout').attr('disabled','disabled');
 		else $('.zoomout').removeAttr('disabled');
 	}
