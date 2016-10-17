@@ -168,6 +168,27 @@ div.img_map {
 	color: #3ba1d7;	
 }
 
+.tooltip-controls {
+	text-align: right;
+	padding: 5px 5px 0 0;
+}
+
+.tooltip-controls .btn.close {
+	line-height: 18px;
+    display: inline-block;
+    width: 17px;
+    text-align: center;
+    height: 17px;
+    border-radius: 10px;
+    border: 1px solid black;
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.tooltip-controls .btn.close:hover {
+	background-color: lightgrey;
+}
+
 .tooltip:after {
 	border: solid transparent;
 	content: " ";

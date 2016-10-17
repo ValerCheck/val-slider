@@ -453,6 +453,9 @@ $(document).ready(function(){
 	$(document).on('touchmove','.slider-list',WhileTouchDrag);
 	$(document).on('mouseup','.slider-list',function(){img.obj = null});
 	$(document).on('touchend','.slider-list',function(){img.obj = null});
+	$(document).on('click','.tooltip-controls .close',function(e){
+		$('.tooltip').remove();
+	});
 	$(document).on('click',"area",function(e){
 		if ($('.tooltip').data('used-for') == $(this).attr('id')) {
 			$('.tooltip').remove();
@@ -463,6 +466,7 @@ $(document).ready(function(){
 		$("<div class='tooltip left'></div>")
 		.css({opacity:0,left:0,top:0})
 		.data('used-for',$(this).attr('id'))
+		.append('<div class="tooltip-controls"><div class="btn close">&#10006;</div></div>')
 		.append("<h3 class='tooltip-title'></h3>")
 		.append($("<div class='tooltip-content'></div>").append("<img src='http://placehold.it/150x150'/>"));
 
