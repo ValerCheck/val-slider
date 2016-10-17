@@ -306,9 +306,37 @@ $(document).ready(function(){
 
 			center.x *= 2 / areaData.length;
 			center.y *= 2 / areaData.length;
-			position = {left:(center.x + 20),top:(center.y - (tooltip.height()/2))}
-		
-			tooltip.css(position);
+
+			var params = {
+				x : 20,
+				y : 0,
+				class : 'left'
+			}
+				
+			pos = $('.active .img_map').position();
+			params.y = -tooltip.height()/2;
+
+			var localCenter = {
+				x : (center.x + pos.left),
+				y : (center.y + pos.top)
+			}
+
+			if ((localCenter.x + tooltip.width()) > img.frame.width) {
+				center.x -= tooltip.width();
+				params.x = -20;
+				params.class = 'right';
+			}
+
+			tooltip.addClass(params.class);
+			tooltip.css('opacity',1);
+
+			var style = {
+				left : (center.x + params.x),
+				top : (center.y + params.y),
+				opacity : 1
+			}
+			
+			tooltip.css(style);
 		},
 		ImageObjectPosition : function() {
 			if (img.obj === null) return;
@@ -462,9 +490,11 @@ $(document).ready(function(){
 			return;
 		}
 		$('.tooltip').remove();
+		var pos = $('.active .img_map').position();
+
 		var tooltip = 
-		$("<div class='tooltip left'></div>")
-		.css({opacity:0,left:0,top:0})
+		$("<div class='tooltip'></div>")
+		.css({opacity:0,left:(-pos.left),top:(-pos.top)})
 		.data('used-for',$(this).attr('id'))
 		.append('<div class="tooltip-controls"><div class="btn close">&#10006;</div></div>')
 		.append("<h3 class='tooltip-title'></h3>")
@@ -479,13 +509,38 @@ $(document).ready(function(){
 			return p;
 		},{x:0,y:0});
 
-		center.x = 2 * center.x / areaData.length;
-		center.y = 2 * center.y / areaData.length;
+		center.x *= 2 / areaData.length;
+		center.y *= 2 / areaData.length;
+
+		var params = {
+			x : 20,
+			y : 0,
+			class : 'left'
+		}
 
 		$('.slider-list .active .img_map').append(tooltip);
 
 		$('.tooltip img').load(function(){
-			tooltip.css({left:(center.x + 20),top:(center.y - (tooltip.height()/2))});
+			
+			pos = $('.active .img_map').position();
+			params.y = -tooltip.height()/2;
+
+			var localCenter = {
+				x : (center.x + pos.left),
+				y : (center.y + pos.top)
+			}
+
+			if ((localCenter.x + tooltip.width()) > img.frame.width) {
+				center.x -= tooltip.width();
+				params.x = -20;
+				params.class = 'right';
+			}
+
+			var a = img.frame.width;
+
+			//if (center.x + tooltip.width() > img.frame. )
+			tooltip.addClass(params.class);
+			tooltip.css({left:(center.x + params.x),top:(center.y + params.y)});
 			tooltip.css('opacity',1);
 		});
 		

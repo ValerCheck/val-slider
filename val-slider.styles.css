@@ -174,12 +174,11 @@ div.img_map {
 }
 
 .tooltip-controls .btn.close {
-	line-height: 18px;
+	line-height: 13px;
     display: inline-block;
-    width: 17px;
+    padding: 3px;
     text-align: center;
-    height: 17px;
-    border-radius: 10px;
+    border-radius: 5px;
     color: darkslategrey;
     border: 1.5px solid darkslategrey;
     transition: all 0.3s;
