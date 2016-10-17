@@ -497,8 +497,8 @@ $(document).ready(function(){
 		.css({opacity:0,left:(-pos.left),top:(-pos.top)})
 		.data('used-for',$(this).attr('id'))
 		.append('<div class="tooltip-controls"><div class="btn close">&#10006;</div></div>')
-		.append("<h3 class='tooltip-title'></h3>")
-		.append($("<div class='tooltip-content'></div>").append("<img src='http://placehold.it/150x150'/>"));
+		.append("<h3 class='tooltip-title'>Sample title:</h3>")
+		.append($("<div class='tooltip-content'></div>").append("<img src='http://www.cbgbuildingcompany.com/images/sus-building.jpg'/>"));
 
 		var areaData = $(this).attr('coords').split(',').map(function(c){return parseFloat(c);});
 

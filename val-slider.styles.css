@@ -163,9 +163,16 @@ div.img_map {
 	padding: 5px;
 }
 
+.tooltip-content img {
+	width: 200px;
+	height: auto;
+}
+
 .tooltip-title {
 	margin: 0;
-	color: #3ba1d7;	
+	color: #3ba1d7;
+	word-break: break-all;
+	width: 90%;
 }
 
 .tooltip-controls {
