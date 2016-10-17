@@ -127,6 +127,13 @@ body {
 
 div.img_map {
 	position: absolute !important;
+	width: 100%;
+	height: 100%;
+}
+
+.img_map img {
+	width: 100%;
+	height: 100%;
 }
 
 .val-slider-wrapper .slider-list img.img_map {
@@ -143,34 +150,20 @@ div.img_map {
 	height: 100%;
 }
 
-.tooltips {
-	padding: 0;
-	margin: 0;
-	position: absolute;
-}
-
-.tooltips li {
-	list-style: none;
-	display: none;
-}
-
-.tooltip.active {
-	display: block;
-}
-
 .tooltip {
-	position: relative;
+	display: inline-block;
+	position: absolute;
 	background: #efefef;
 	border-radius: 3px;
 	overflow: initial !important;
 }
 
-.tooltip .content,
-.tooltip h3 {
+.tooltip-content,
+.tooltip-title {
 	padding: 5px;
 }
 
-.tooltip h3 {
+.tooltip-title {
 	margin: 0;
 	color: #3ba1d7;	
 }

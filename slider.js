@@ -3,15 +3,6 @@ $(document).ready(function(){
 	const img_w = 1021;
 	const img_h = 941;
 	var scale = 1,slideNumbers=[],currentSlide,lastSlideNumber = 0;
-	var mapOptions = {
-		fillColor: '0168c4',
-		strokeColor : '000000',
-		strokeWidth : 1,
-        //fillOpacity: 1,
-        //stroke : true,
-        scaleMap : false,
-        isSelectable: false
-	};
 
 	var data = [{
 		set : 1,
@@ -19,7 +10,7 @@ $(document).ready(function(){
 		imageUrl : './images/map.png'
 	},{
 		set: 2,
-		imageUrl : './images/map-1.png',
+		imageUrl : 'https://netcommunity.gsu.edu/view.image?Id=3011',
 		points : [
 			{
 				data : [525,463,545,436,575,461,553,485,536,473]
@@ -28,7 +19,7 @@ $(document).ready(function(){
 		title : 'Georgia State University 1940'
 	},{
 		set: 3,
-		imageUrl : './images/map-2.png',
+		imageUrl : 'https://netcommunity.gsu.edu/view.image?Id=3012',
 		points : [
 			{
 				data : [569.3,482,599,446.9,622.8,467.9,593,503.1]
@@ -37,7 +28,7 @@ $(document).ready(function(){
 		title : 'Georgia State University 1950'
 	},{
 		set: 4,
-		imageUrl : './images/map-3.png',
+		imageUrl : 'https://netcommunity.gsu.edu/view.image?Id=3013',
 		points : [
 			{ data : [475,535.5,494,512,520,535.5,499.5,555] },
 			{ data : [525,535,555,498,585,521,555,558] },
@@ -47,7 +38,7 @@ $(document).ready(function(){
 		title : 'Georgia State University Campus 1960'
 	},{
 		set: 5,
-		imageUrl : './images/map-4.png',
+		imageUrl : 'https://netcommunity.gsu.edu/view.image?Id=3014',
 		points : [
 			{ data : [546,433.6,562.6,415,589,438,572.3,456] },
 			{ data : [502,497,526.2,470,546,486.5,521,514] },
@@ -64,7 +55,7 @@ $(document).ready(function(){
 		title : 'Georgia State University Campus 1970'
 	},{
 		set : 6,
-		imageUrl : './images/map-5.png',
+		imageUrl : 'https://netcommunity.gsu.edu/view.image?Id=3015',
 		points : [
 			{ data: [388.5,476.9,411,448.8,430.5,464,408.2,492.2] },
 			{ data: [487.5,454.8,510,426.8,529.5,442.2,507.8,470.2] },
@@ -77,7 +68,7 @@ $(document).ready(function(){
 		title : 'Georgia State University Campus 1980'
 	},{
 		set : 7,
-		imageUrl : './images/map-6.png',
+		imageUrl : 'https://netcommunity.gsu.edu/view.image?Id=3016',
 		points : [
 			{ data : [353.9,199,366.3,189.2,374.1,198,361.5,207.8] },
 			{ data : [364,225,383.7,208,397,222,377.1,239] },
@@ -94,7 +85,7 @@ $(document).ready(function(){
 		title : 'Georgia State University Campus 1990'
 	},{
 		set : 8,
-		imageUrl : './images/map-7.png',
+		imageUrl : 'https://netcommunity.gsu.edu/view.image?Id=3017',
 		points : [
 			{ data : [836,182,836,119,943,119,943,182] },
 			{ data : [375,257,405.5,229,426,252,395.5,280] },
@@ -106,7 +97,7 @@ $(document).ready(function(){
 	},
 	{
 		set : 9,
-		imageUrl : './images/map-8.png',
+		imageUrl : 'https://netcommunity.gsu.edu/view.image?Id=3018',
 		points : [
 			{ data : [846,91,846,28,933,28,933,91] },
 			{ data : [493,254,493,202,544,202,544,254] },
@@ -167,12 +158,14 @@ $(document).ready(function(){
 
 	function SetCoordsToMaps(number) {
 		if (!data[number].points) return;
-		return $.map(data[number].points,function(point){
-			return ($("<area shape='poly' href='#'/>")
+		return $.map(data[number].points,function(point,id){
+			var ident = "a" + number + "-" + id;
+			var area = ($("<area shape='poly' href='#'/>")
 			.attr({
 				coords : ScaleCoordinates(point.data),
-				onclick : 'alert("Hello")'
+				id : ident
 			}));
+			return area;
 		});
 	}
 
@@ -185,12 +178,15 @@ $(document).ready(function(){
 			return $(slide).data('slide-number') == number;
 		})[0];
 
-		var imageUrl = data.filter(function(el){ return el.set == number; })[0].imageUrl;
+		var image = $(slide).children('img');
+
+		var imageUrl = image.attr('src') || data.filter(function(el){ return el.set == number; })[0].imageUrl;
 
 		var map = $(slide).children('map');
 		map = map.length ? $(map[0]) : ($("<map></map>").attr({id:'map-'+number,name:'map-'+number}));
-		$(slide).children('img').attr({id:'img-map-'+number,usemap:'#'+map.attr('name'),src:(imageUrl)});
-
+		image.attr({id:'img-map-'+number,usemap:'#'+map.attr('name'),src:(imageUrl)}).removeClass('img_map');
+		$(slide).prepend($("<div class='img_map'></div>").append(image));
+		
 		if (!$(slide).children('map').length) $(slide).prepend(map);
 
 		var areas = [];
@@ -210,7 +206,7 @@ $(document).ready(function(){
 			$(slide).data('slide-number',id + 1);
 			if (id + 1 > lastSlideNumber) lastSlideNumber = id + 1;
 		});
-		for (var i = 1; i < lastSlideNumber; i++) 
+		for (var i = 1; i < lastSlideNumber + 1; i++) 
 			GenerateSlideMapAreas(i);
 	}
 
@@ -290,6 +286,30 @@ $(document).ready(function(){
 			delta.width 	= img.left + img.width;
 			delta.height 	= img.top + img.height;
 		},
+		TooltipPosition : function() {
+			var tooltip = $('.tooltip');
+			if (!tooltip.length) return;
+
+			var position = {left:0,top:0};
+			var areaData = 
+			$('#' + tooltip.data('used-for'))
+			.attr('coords')
+			.split(',')
+			.map(function(c){return parseFloat(c);});
+
+			var center = areaData
+			.reduce(function(p,val,id){
+				if (id % 2) p.y += val;
+				else p.x += val;
+				return p;
+			},{x:0,y:0});
+
+			center.x *= 2 / areaData.length;
+			center.y *= 2 / areaData.length;
+			position = {left:(center.x + 20),top:(center.y - (tooltip.height()/2))}
+		
+			tooltip.css(position);
+		},
 		ImageObjectPosition : function() {
 			if (img.obj === null) return;
 	       	$(img.obj).css(HandleBorders({
@@ -305,13 +325,6 @@ $(document).ready(function(){
 	}
 
 	const zoomer = 0.1;
-
-	function redrawTooltips(){
-		var tooltips = $('.tooltips');
-		$('div.img_map').append(tooltips);
-		var tooltip = $('.tooltip.active');
-		if (tooltip.length) tooltip.css({top:(tooltip.position().top - (tooltip.height()/2))});
-	}
 
 	function slideShowStart(){
 
@@ -330,7 +343,6 @@ $(document).ready(function(){
 
 		var active = $('.slider-list .active');
 		active.removeClass('active');
-		//active.find('.img_map:not(.mapster_el)').mapster('unbind');
 
 		setTimeout(function(){
 			var number = slideNumbers[prevActive.next].number;
@@ -366,7 +378,7 @@ $(document).ready(function(){
 			args = args.slice(1);
 			switch(command){
 				case 'resize' :
-					$(this).css({width:args[0].width,height:args[0].height});
+					$(this).css({width:args[0].width,height:args[0].height,left:0,top:0});
 					ScaleCoordinates(null,args[0].scale);
 					break;
 			}
@@ -392,7 +404,7 @@ $(document).ready(function(){
 		}
 
 		map.valSlider('resize',current);
-		
+		Update.TooltipPosition('zoom');
 		Update.ControlsStatus(mul);
 	}
 
@@ -423,7 +435,7 @@ $(document).ready(function(){
 
 	function WhileDrag(event) {
 		Update.Cursor(event);
-		Update.ImageObjectPosition();       	
+		Update.ImageObjectPosition(); 
 	}
 
 	function WhileTouchDrag(event) {
@@ -441,8 +453,42 @@ $(document).ready(function(){
 	$(document).on('touchmove','.slider-list',WhileTouchDrag);
 	$(document).on('mouseup','.slider-list',function(){img.obj = null});
 	$(document).on('touchend','.slider-list',function(){img.obj = null});
+	$(document).on('click',"area",function(e){
+		if ($('.tooltip').data('used-for') == $(this).attr('id')) {
+			$('.tooltip').remove();
+			return;
+		}
+		$('.tooltip').remove();
+		var tooltip = 
+		$("<div class='tooltip left'></div>")
+		.css({opacity:0,left:0,top:0})
+		.data('used-for',$(this).attr('id'))
+		.append("<h3 class='tooltip-title'></h3>")
+		.append($("<div class='tooltip-content'></div>").append("<img src='http://placehold.it/150x150'/>"));
+
+		var areaData = $(this).attr('coords').split(',').map(function(c){return parseFloat(c);});
+
+		var center = areaData
+		.reduce(function(p,val,id){
+			if (id % 2) p.y += val;
+			else p.x += val;
+			return p;
+		},{x:0,y:0});
+
+		center.x = 2 * center.x / areaData.length;
+		center.y = 2 * center.y / areaData.length;
+
+		$('.slider-list .active .img_map').append(tooltip);
+
+		$('.tooltip img').load(function(){
+			tooltip.css({left:(center.x + 20),top:(center.y - (tooltip.height()/2))});
+			tooltip.css('opacity',1);
+		});
+		
+	});
+
 	$(document).on('click','.slides-titles > li',function(e){
-		$('.slides-titles li.active').removeClass('active');
+		$('.slides-titles .active').removeClass('active');
 		var target = $(e.currentTarget).addClass('active');
 		
 		$('.slider-list .active')
@@ -454,10 +500,10 @@ $(document).ready(function(){
 		if (target.length) {
 			target = $(target[0]);
 			setTimeout(function(){
-				scale = 1;
 				target.addClass('active');
 				Update.ControlsStatus();
-				
+				$('.active .img_map').css({width:'100%',height:'100%',left:0,top:0});
+				$('.tooltip').remove();
 			},250);
 		}
 	});
