@@ -180,7 +180,8 @@ div.img_map {
     text-align: center;
     height: 17px;
     border-radius: 10px;
-    border: 1px solid black;
+    color: darkslategrey;
+    border: 1.5px solid darkslategrey;
     transition: all 0.3s;
     cursor: pointer;
 }
