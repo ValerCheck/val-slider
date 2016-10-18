@@ -196,7 +196,7 @@ div.img_map {
 	background-color: lightgrey;
 }
 
-.tooltip:after {
+.tooltip .tooltip-arrow {
 	border: solid transparent;
 	content: " ";
 	height: 0;
@@ -206,6 +206,7 @@ div.img_map {
 	border-color: rgba(239, 239, 239, 0);
 	border-width: 20px;
 }
+
 
 .tooltip.top:after {
 	bottom: 100%;
@@ -221,14 +222,14 @@ div.img_map {
 	margin-left: -20px;
 }
 
-.tooltip.left:after {
+.tooltip.left .tooltip-arrow {
 	right: 100%;
 	top: 50%;
 	border-right-color: #efefef;
 	margin-top: -20px;
 }
 
-.tooltip.right:after {
+.tooltip.right .tooltip-arrow {
 	left: 100%;
 	top: 50%;
 	border-left-color: #efefef;

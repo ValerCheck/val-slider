@@ -162,7 +162,7 @@ $(document).ready(function(){
 			var area = ($("<area shape='poly' href='#'/>")
 			.attr({
 				coords : ScaleCoordinates(point.data),
-				id : ident
+				class : ident
 			}));
 			return area;
 		});
@@ -228,18 +228,6 @@ $(document).ready(function(){
 	GenerateAllMapAreas();
 	GenerateAllTitles();
 
-	var areas = $('area');
-	var areasPoints = {};
-
-	function setTooltipPosition(className,p,xd,yd){
-		var tooltip = $(className);
-		tooltip.css({
-			'top'  : areasPoints[className].points[p].y + yd,
-			'left' : areasPoints[className].points[p].x + xd
-		});
-		return tooltip;
-	}
-
 	var cursor = { x : 0, y : 0 },
 		delta = {
 			left   : 0, top    : 0,
@@ -271,14 +259,14 @@ $(document).ready(function(){
 			var touch = event.originalEvent.touches[0];
 			SetCursorXY(touch.pageX,touch.pageY);
 		},
-		ImageValues : function() {
+		ImageValues : function(isMoving) {
 			var imgMap = $('.active .img_map');
 			var pos = imgMap.position();
-			img.obj 	= imgMap;
 			img.left 	= pos.left;
 			img.top 	= pos.top;
 			img.width 	= imgMap.width();
 			img.height 	= imgMap.height();
+			img.obj 	= isMoving ? imgMap : null;
 		},
 		DeltaValues : function() {
 			delta.left 		= (cursor.x - img.left) || 0;
@@ -292,7 +280,7 @@ $(document).ready(function(){
 
 			var position = {left:0,top:0};
 			var areaData = 
-			$('#' + tooltip.data('used-for'))
+			$('.active .' + tooltip.data('used-for'))
 			.attr('coords')
 			.split(',')
 			.map(function(c){return parseFloat(c);});
@@ -306,7 +294,7 @@ $(document).ready(function(){
 
 			center.x = 2 * center.x / areaData.length;
 			center.y = 2 * center.y / areaData.length;
-			debugger;
+			
 			var params = {
 				x : 20,
 				y : 0,
@@ -321,22 +309,38 @@ $(document).ready(function(){
 				y : (center.y + pos.top)
 			}
 
-			if ((localCenter.x + tooltip.width()) > img.frame.width) {
+			if ((center.x + tooltip.width()) > img.width) {
 				center.x -= tooltip.width();
 				params.x = -20;
 				params.class = 'right';
 			}
 
-			tooltip.addClass(params.class);
-			tooltip.css('opacity',1);
+			tooltipPos = {
+				top : (center.y + params.y),
+				bottom : (center.y + params.y + tooltip.height())
+			}
+
+			if (tooltipPos.top < 0) {
+				params.y += (-tooltipPos.top + 10);
+				$('.tooltip-arrow').css({top:(-params.y)});
+			}
+			else if (tooltipPos.bottom > img.height) {
+				params.y -= (tooltipPos.bottom - img.height + 10);
+				$('.tooltip-arrow').css({top:(-params.y)});
+			} else {
+				$('.tooltip-arrow').css({top:'50%'});
+			}
 
 			var style = {
 				left : (center.x + params.x),
 				top : (center.y + params.y),
 				opacity : 1
 			}
-			
-			tooltip.css(style);
+
+			tooltip
+			.removeClass('.left,.right,.top,.bottom')
+			.addClass(params.class)
+			.css(style);
 		},
 		ImageObjectPosition : function() {
 			if (img.obj === null) return;
@@ -432,20 +436,21 @@ $(document).ready(function(){
 		}
 
 		map.valSlider('resize',current);
-		Update.TooltipPosition('zoom');
+		Update.ImageValues();
+		Update.TooltipPosition();
 		Update.ControlsStatus(mul);
 	}
 
 	function StartDrag(event) {
 		Update.Cursor(event);
-		Update.ImageValues();
+		Update.ImageValues(true);
 		Update.DeltaValues();
 	}
 
 	function StartTouchDrag(event) {
 		event.preventDefault();
 		Update.Touch(event);
-		Update.ImageValues();
+		Update.ImageValues(true);
 		Update.DeltaValues();
 	}
 
@@ -485,7 +490,7 @@ $(document).ready(function(){
 		$('.tooltip').remove();
 	});
 	$(document).on('click touchstart',"area",function(e){
-		if ($('.tooltip').data('used-for') == $(this).attr('id')) {
+		if ($('.tooltip').data('used-for') == $(this).attr('class')) {
 			$('.tooltip').remove();
 			return;
 		}
@@ -495,10 +500,11 @@ $(document).ready(function(){
 		var tooltip = 
 		$("<div class='tooltip'></div>")
 		.css({opacity:0,left:(-pos.left),top:(-pos.top)})
-		.data('used-for',$(this).attr('id'))
+		.data('used-for',$(this).attr('class'))
 		.append('<div class="tooltip-controls"><div class="btn close">&#10006;</div></div>')
 		.append("<h3 class='tooltip-title'>Sample title:</h3>")
-		.append($("<div class='tooltip-content'></div>").append("<img src='http://www.cbgbuildingcompany.com/images/sus-building.jpg'/>"));
+		.append($("<div class='tooltip-content'></div>").append("<img src='http://www.cbgbuildingcompany.com/images/sus-building.jpg'/>"))
+		.append('<div class="tooltip-arrow"></div>');
 
 		var areaData = $(this).attr('coords').split(',').map(function(c){return parseFloat(c);});
 
@@ -521,7 +527,7 @@ $(document).ready(function(){
 		$('.slider-list .active .img_map').append(tooltip);
 
 		$('.tooltip img').load(function(){
-			
+			Update.ImageValues();
 			pos = $('.active .img_map').position();
 			params.y = -tooltip.height()/2;
 
@@ -530,15 +536,26 @@ $(document).ready(function(){
 				y : (center.y + pos.top)
 			}
 
-			if ((localCenter.x + tooltip.width()) > img.frame.width) {
+			if ((center.x + tooltip.width()) > img.width) {
 				center.x -= tooltip.width();
 				params.x = -20;
 				params.class = 'right';
 			}
 
-			var a = img.frame.width;
+			tooltipPos = {
+				top : (center.y + params.y),
+				bottom : (center.y + params.y + tooltip.height())
+			}
 
-			//if (center.x + tooltip.width() > img.frame. )
+			if (tooltipPos.top < 0) {
+				params.y += (-tooltipPos.top + 10);
+				$('.tooltip-arrow').css({top:(-params.y)});
+			}
+			else if (tooltipPos.bottom > img.height) {
+				params.y -= (tooltipPos.bottom - img.height + 10);
+				$('.tooltip-arrow').css({top:(-params.y)})
+			}
+
 			tooltip.addClass(params.class);
 			tooltip.css({left:(center.x + params.x),top:(center.y + params.y)});
 			tooltip.css('opacity',1);
@@ -566,9 +583,9 @@ $(document).ready(function(){
 			},250);
 		}
 	});
-	$(document).on('click','.zoomout',function(){zoom(1-zoomer + 0.019);});
-	$(document).on('click','.zoomin',function(){zoom(1+zoomer);});
-	$(document).on('click','.reset',function(){zoom(1.0/scale);});
+	$(document).on('click','.zoomout',function(e){zoom(1-zoomer + 0.019);});
+	$(document).on('click','.zoomin',function(e){zoom(1+zoomer);});
+	$(document).on('click','.reset',function(e){zoom(1.0/scale);});
 	
 	//setTimeout(slideShowStart,6000);
 
