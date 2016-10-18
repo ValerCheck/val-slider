@@ -6,24 +6,12 @@ $(document).ready(function(){
 
 	var data = [{
 		set : 1,
-		title : 'Georgia State University',
-		imageUrl : './images/map.png'
+		title : 'Georgia State University'
 	},{
 		set: 2,
-		imageUrl : 'https://netcommunity.gsu.edu/view.image?Id=3011',
-		points : [
-			{
-				data : [525,463,545,436,575,461,553,485,536,473]
-			}
-		],
 		title : 'Georgia State University 1940'
 	},{
 		set: 3,
-		points : [
-			{
-				data : [569.3,482,599,446.9,622.8,467.9,593,503.1]
-			}
-		],
 		title : 'Georgia State University 1950'
 	},{
 		set: 4,
@@ -142,8 +130,6 @@ $(document).ready(function(){
 	var cur_w = $('.slider-list > .active').width();
 	var cur_h = $('.slider-list > .active').height();
 
-	debugger;
-
 	function GenerateSlideTitleElement(dataset,options){
 		$('<li></li>')
 		.append("<span class='slide-title'>"+dataset.title+"</span>")
@@ -152,8 +138,25 @@ $(document).ready(function(){
 		.appendTo('.slides-titles');
 	}
 
+	function LoadCoordsFromHtml(number) {
+		data[number].points = [];
+		var areas = 
+		$($('.slider-list > li').toArray()
+		.filter(function(slide){
+			return $(slide).data('slide-number') == (number+1);
+		})[0]).find('area').toArray();
+
+		areas.forEach(function(area,i){
+			var coords = $(area).attr('coords').split(',').map(parseFloat);
+			data[number].points.push({data:coords});
+		});
+		$(areas).remove();
+	}
+
 	function SetCoordsToMaps(number) {
-		if (!data[number].points) return;
+		if (!data[number].points || !data[number].points.length) {
+			LoadCoordsFromHtml(number);
+		}
 		return $.map(data[number].points,function(point,id){
 			var ident = "a" + number + "-" + id;
 			var area = ($("<area shape='poly' href='#'/>")
@@ -179,7 +182,8 @@ $(document).ready(function(){
 		var imageUrl = image.attr('src') || data.filter(function(el){ return el.set == number; })[0].imageUrl;
 
 		var map = $(slide).children('map');
-		map = map.length ? $(map[0]) : ($("<map></map>").attr({id:'map-'+number,name:'map-'+number}));
+		map = map.length ? $(map[0]) : $("<map></map>");
+		map.attr({id:'map-'+number,name:'map-'+number});
 		image.attr({id:'img-map-'+number,usemap:'#'+map.attr('name'),src:(imageUrl)}).removeClass('img_map');
 		$(slide).prepend($("<div class='img_map'></div>").append(image));
 		
@@ -467,7 +471,7 @@ $(document).ready(function(){
 		Update.ImageObjectPosition();
 	}
 
-	controls.appendTo('.val-slide');
+	controls.appendTo('.val-slide:not(:first)');
 	$('.zoomout').attr('disabled','disabled');
 
 	$(document).on('dragstart','.active .img_map',function(){return false;});
