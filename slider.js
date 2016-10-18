@@ -19,7 +19,6 @@ $(document).ready(function(){
 		title : 'Georgia State University 1940'
 	},{
 		set: 3,
-		imageUrl : 'https://netcommunity.gsu.edu/view.image?Id=3012',
 		points : [
 			{
 				data : [569.3,482,599,446.9,622.8,467.9,593,503.1]
@@ -28,7 +27,6 @@ $(document).ready(function(){
 		title : 'Georgia State University 1950'
 	},{
 		set: 4,
-		imageUrl : 'https://netcommunity.gsu.edu/view.image?Id=3013',
 		points : [
 			{ data : [475,535.5,494,512,520,535.5,499.5,555] },
 			{ data : [525,535,555,498,585,521,555,558] },
@@ -38,7 +36,6 @@ $(document).ready(function(){
 		title : 'Georgia State University Campus 1960'
 	},{
 		set: 5,
-		imageUrl : 'https://netcommunity.gsu.edu/view.image?Id=3014',
 		points : [
 			{ data : [546,433.6,562.6,415,589,438,572.3,456] },
 			{ data : [502,497,526.2,470,546,486.5,521,514] },
@@ -68,7 +65,6 @@ $(document).ready(function(){
 		title : 'Georgia State University Campus 1980'
 	},{
 		set : 7,
-		imageUrl : 'https://netcommunity.gsu.edu/view.image?Id=3016',
 		points : [
 			{ data : [353.9,199,366.3,189.2,374.1,198,361.5,207.8] },
 			{ data : [364,225,383.7,208,397,222,377.1,239] },
@@ -85,7 +81,6 @@ $(document).ready(function(){
 		title : 'Georgia State University Campus 1990'
 	},{
 		set : 8,
-		imageUrl : 'https://netcommunity.gsu.edu/view.image?Id=3017',
 		points : [
 			{ data : [836,182,836,119,943,119,943,182] },
 			{ data : [375,257,405.5,229,426,252,395.5,280] },
@@ -97,7 +92,6 @@ $(document).ready(function(){
 	},
 	{
 		set : 9,
-		imageUrl : 'https://netcommunity.gsu.edu/view.image?Id=3018',
 		points : [
 			{ data : [846,91,846,28,933,28,933,91] },
 			{ data : [493,254,493,202,544,202,544,254] },
@@ -304,9 +298,9 @@ $(document).ready(function(){
 				return p;
 			},{x:0,y:0});
 
-			center.x *= 2 / areaData.length;
-			center.y *= 2 / areaData.length;
-
+			center.x = 2 * center.x / areaData.length;
+			center.y = 2 * center.y / areaData.length;
+			debugger;
 			var params = {
 				x : 20,
 				y : 0,
@@ -481,10 +475,10 @@ $(document).ready(function(){
 	$(document).on('touchmove','.slider-list',WhileTouchDrag);
 	$(document).on('mouseup','.slider-list',function(){img.obj = null});
 	$(document).on('touchend','.slider-list',function(){img.obj = null});
-	$(document).on('click','.tooltip-controls .close',function(e){
+	$(document).on('click touchstart','.tooltip-controls .close',function(e){
 		$('.tooltip').remove();
 	});
-	$(document).on('click',"area",function(e){
+	$(document).on('click touchstart',"area",function(e){
 		if ($('.tooltip').data('used-for') == $(this).attr('id')) {
 			$('.tooltip').remove();
 			return;
