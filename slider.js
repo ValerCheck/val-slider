@@ -137,10 +137,12 @@ $(document).ready(function(){
 	.append($("<input type='button' class='zoomin button' value='Zoom in'>"))
 	.append($("<input type='button' class='reset button' value='Reset'>"));
 
-	$('.slider-list > li:first-child').addClass('active');
+	$('.slider-list >:first-child').addClass('active');
 
-	var cur_w = $('.slider-list > .active >:first-child').width();
-	var cur_h = $('.slider-list > .active >:first-child').height();
+	var cur_w = $('.slider-list > .active').width();
+	var cur_h = $('.slider-list > .active').height();
+
+	debugger;
 
 	function GenerateSlideTitleElement(dataset,options){
 		$('<li></li>')
