@@ -13,6 +13,32 @@ body {
 	box-shadow: 0 30px 40px -30px;
 }
 
+.slideshow-controls {
+	background-image: url(./images/slideshow-controls.png);
+    background-size: auto 100%;
+    width: 40px;
+    height: 40px;
+    display: inline-block;
+    position: absolute;
+    right: 0;
+    opacity: 0.5;
+    top: -25%;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.slideshow-controls:hover {
+	opacity: 0.7;
+}
+
+.slideshow-controls.stop {
+	background-position: -242px 0;
+}
+
+.slideshow-controls.play {
+	background-position: -191px 0;
+}
+
 .val-slider-wrapper {
 	width: 100%;
 	height: 100%;
@@ -26,6 +52,7 @@ body {
 
 .val-slider-wrapper .description .title {
 	font-family: 'Open Sans', sans-serif;
+	position: relative;
 	font-size: 17px;
 	color: #0811c4;
 	margin: 30px 5px 0px 5px;

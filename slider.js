@@ -350,35 +350,6 @@ $(document).ready(function(){
 
 	const zoomer = 0.1;
 
-	function slideShowStart(){
-
-		slideNumbers.forEach(function(el,index){
-			if (!el.next) el.next = index+1 < slideNumbers.length ? index + 1 : 0;
-		})
-
-		var prevActive = slideNumbers.filter(function(el,index){
-			if (el.active) {
-				el.active = false;
-				return true;
-			}
-		})[0];
-
-		$('.slides-titles li.active').removeClass('active');
-
-		var active = $('.slider-list .active');
-		active.removeClass('active');
-
-		setTimeout(function(){
-			var number = slideNumbers[prevActive.next].number;
-			slideNumbers[prevActive.next].active = true;
-			$('.slider-list [data-slide-number=' + number + ']').addClass('active');
-			var elem = $('.slides-titles > li').toArray().filter(function(el){return $(el).data('slide-number')==number;});
-			$(elem).addClass('active');
-			setTimeout(slideShowStart,6000);
-		},250);
-
-	}
-
 	$.fn.extend({
 		valSlider : function() {
 			var args = [].slice.call(arguments);
@@ -522,7 +493,7 @@ $(document).ready(function(){
 			Update.ImageValues();
 			params.y = -tooltip.height()/2;
 
-			if ((center.x + tooltip.width() + 20) > (img.width - 30)) {
+			if ((center.x + tooltip.width() + 20) > (img.width - 20)) {
 				center.x -= tooltip.width();
 				params.x = -20;
 				params.class = 'right';
@@ -549,30 +520,91 @@ $(document).ready(function(){
 		
 	});
 
+	var timers = [];
+
+	function ClearTimers(){
+		while(timers.length) clearTimeout(timers.pop());
+	}
+
+	$('.slideshow-controls').addClass('stop');
+	timers.push(setTimeout(slideShowStart,6000));
+
+	$(document).on('mouseover','.slider-list',function(){
+		ClearTimers();
+		$('.slideshow-controls').removeClass('play stop').addClass('play');
+	});
+
+	$(document).on('click','.slideshow-controls.play',function() {
+		slideShowStart();
+		$('.slideshow-controls').removeClass('play stop').addClass('stop');
+	});
+
+	$(document).on('click','.slideshow-controls.stop',function() {
+		ClearTimers();
+		$('.slideshow-controls').removeClass('play stop').addClass('play');
+	});
+
 	$(document).on('click','.slides-titles > li',function(e){
-		$('.slides-titles .active').removeClass('active');
-		var target = $(e.currentTarget).addClass('active');
 		
-		$('.slider-list .active')
-		.removeClass('active');
+		$('.slides-titles .active, .slider-list .active').removeClass('active');
+		var target = $(e.currentTarget).addClass('active');
+
 		target = $('.slider-list > li').toArray().filter(function(el){
 			return $(el).data('slide-number') == target.data('slide-number');
 		});
 
 		if (target.length) {
-			target = $(target[0]);
 			setTimeout(function(){
-				target.addClass('active');
+				$(target[0]).addClass('active');
 				Update.ControlsStatus();
 				$('.active .img_map').css({width:'100%',height:'100%',left:0,top:0});
 				$('.tooltip').remove();
+
+				slideNumbers.every(function(el){
+					if (!el.active) return true;
+					el.active = false;
+					return false;
+				})[0];
+
+				slideNumbers[$('.slider-list .active').data('slide-number')-1].active = true;
+
 			},250);
 		}
 	});
 	$(document).on('click','.zoomout',function(e){zoom(1-zoomer + 0.019);});
 	$(document).on('click','.zoomin',function(e){zoom(1+zoomer);});
 	$(document).on('click','.reset',function(e){zoom(1.0/scale);});
-	
-	//setTimeout(slideShowStart,6000);
+
+	function slideShowStart(){
+
+		slideNumbers.forEach(function(el,index){
+			if (!el.next) el.next = (index+1 < slideNumbers.length) ? (index + 1) : 0;
+		})
+
+		var prevActive = slideNumbers.filter(function(el){
+			if (!el.active) return false;
+			el.active = false;
+			return true;
+		})[0];
+
+		$('.slides-titles .active, .slider-list .active').removeClass('active');
+
+		var t = setTimeout(function(){
+			var number = slideNumbers[prevActive.next].number;
+			slideNumbers[prevActive.next].active = true;
+
+			var getActive = function(el) {return $(el).data('slide-number') == number;}
+
+			var slide = $('.slider-list > li, .slides-titles > li').toArray().filter(getActive);
+			$(slide).addClass('active');
+			
+			var t2 = setTimeout(function(){
+				slideShowStart();
+			},6000);
+			timers.push(t2);
+		},250);
+		timers.push(t);
+
+	}
 
 });
