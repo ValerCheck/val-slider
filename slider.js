@@ -297,19 +297,11 @@ $(document).ready(function(){
 			
 			var params = {
 				x : 20,
-				y : 0,
+				y : -tooltip.height()/2,
 				class : 'left'
 			}
-				
-			pos = $('.active .img_map').position();
-			params.y = -tooltip.height()/2;
 
-			var localCenter = {
-				x : (center.x + pos.left),
-				y : (center.y + pos.top)
-			}
-
-			if ((center.x + tooltip.width()) > img.width) {
+			if ((center.x + tooltip.width() + 20) > (img.width - 10)) {
 				center.x -= tooltip.width();
 				params.x = -20;
 				params.class = 'right';
@@ -338,7 +330,7 @@ $(document).ready(function(){
 			}
 
 			tooltip
-			.removeClass('.left,.right,.top,.bottom')
+			.removeClass('left right top bottom')
 			.addClass(params.class)
 			.css(style);
 		},
@@ -528,15 +520,9 @@ $(document).ready(function(){
 
 		$('.tooltip img').load(function(){
 			Update.ImageValues();
-			pos = $('.active .img_map').position();
 			params.y = -tooltip.height()/2;
 
-			var localCenter = {
-				x : (center.x + pos.left),
-				y : (center.y + pos.top)
-			}
-
-			if ((center.x + tooltip.width()) > img.width) {
+			if ((center.x + tooltip.width() + 20) > (img.width - 30)) {
 				center.x -= tooltip.width();
 				params.x = -20;
 				params.class = 'right';
