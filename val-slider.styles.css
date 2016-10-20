@@ -14,12 +14,11 @@ body {
 }
 
 .slideshow-controls {
-	background-image: url(./images/slideshow-controls.png);
-    background-size: auto 100%;
     width: 40px;
     height: 40px;
     display: inline-block;
     position: absolute;
+    background-size: cover;
     right: 0;
     opacity: 0.5;
     top: -25%;
@@ -32,11 +31,41 @@ body {
 }
 
 .slideshow-controls.stop {
-	background-position: -242px 0;
+	background-image: url(./images/stop-button.png);
+}
+
+.slider-controls > *
+ {
+	width: 40px;
+    height: 40px;
+    display: block;
+    background-size: cover;
+    background-color: transparent;
+    border: 0;
+    opacity: 0.6;
+    top: -25%;
+    cursor: pointer;
+    transition: all 0.2s;	
+}
+
+.slider-controls > *.active-btn:hover {
+	opacity: 1;
+}
+
+.slider-controls .zoomout {
+	background-image: url(./images/zoom-out-button.png);
+}
+
+.slider-controls .zoomin {
+	background-image: url(./images/zoom-in-button.png);
+}
+
+.slider-controls .reset {
+	background-image: url(./images/reset-button.png);
 }
 
 .slideshow-controls.play {
-	background-position: -191px 0;
+	background-image: url(./images/play-button.png);
 }
 
 .val-slider-wrapper {
@@ -264,13 +293,14 @@ div.img_map {
 }
 
 .slider-controls {
+	padding: 10px;
+    background-color: rgba(255,255,255,0.8);
+    border-radius: 40px;
 	position: absolute;
 	margin: 20px;
 	top: 0;
 }
 
-.slider-controls > * {
-	display: block;
-	width: 100%;
-	margin-bottom: 5px;
+.slider-controls > *:nth-child(n+2) {
+	margin-top: 5px;
 }
