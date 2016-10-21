@@ -13,7 +13,7 @@ body {
 	box-shadow: 0 30px 40px -30px;
 }
 
-.slideshow-controls {
+/*.slideshow.button {
     width: 40px;
     height: 40px;
     display: inline-block;
@@ -24,13 +24,13 @@ body {
     top: -25%;
     cursor: pointer;
     transition: all 0.2s;
-}
+}*/
 
-.slideshow-controls:hover {
+.slideshow.button:hover {
 	opacity: 0.7;
 }
 
-.slideshow-controls.stop {
+.slideshow.button.stop {
 	background-image: url(./images/stop-button.png);
 }
 
@@ -68,7 +68,7 @@ body {
 	background-image: url(./images/reset-button.png);
 }
 
-.slideshow-controls.play {
+.slideshow.button.play {
 	background-image: url(./images/play-button.png);
 }
 

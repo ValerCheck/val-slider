@@ -2,7 +2,7 @@ $(document).ready(function(){
 
 	const img_w = 1021;
 	const img_h = 941;
-	var scale = 1,slideNumbers=[],currentSlide,lastSlideNumber = 0;
+	var scale = 1,slideNumbers=[],currentSlide,lastSlideNumber = 0,PrevActiveSlide = null;
 
 	var data = [{
 		set : 1,
@@ -123,7 +123,8 @@ $(document).ready(function(){
 	$("<div class='slider-controls'></div>")
 	.append($("<input type='button' class='zoomout button'>"))
 	.append($("<input type='button' class='zoomin button active-btn' >"))
-	.append($("<input type='button' class='reset button active-btn' >"));
+	.append($("<input type='button' class='reset button active-btn' >"))
+	.append($("<input type='button' class='slideshow button active-btn'>"));
 
 	$('.slider-list >:first-child').addClass('active');
 
@@ -348,11 +349,11 @@ $(document).ready(function(){
 			function Disable(selector) { $(selector).attr('disabled','disabled').removeClass('active-btn'); }
 			function Enable(selector) { $(selector).removeAttr('disabled').addClass('active-btn');}
 
-			if (scale * mul < 1 || scale == 1) Disable('.zoomout,.reset');
-			else Enable('.zoomout,.reset');
+			if (scale * mul < 1 || scale == 1) Disable('.active .zoomout,.active .reset');
+			else Enable('.active .zoomout, .active .reset');
 
-			if (scale * mul > 2) Disable('.zoomin');
-			else Enable('.zoomin');
+			if (scale * mul > 2) Disable('.active .zoomin');
+			else Enable('.active .zoomin');
 		}
 	}
 
@@ -534,7 +535,7 @@ $(document).ready(function(){
 		while(timers.length) clearTimeout(timers.pop());
 	}
 
-	$('.slideshow-controls').addClass('stop');
+	$('.slideshow.button').addClass('stop');
 	timers.push(setTimeout(slideShowStart,6000));
 
 	var Timer = {
@@ -547,23 +548,33 @@ $(document).ready(function(){
 	}
 
 	$(document).on('mouseover','.slider-list',function(){
+		var a = timers;
 		Timer.Stop();
-		$('.slideshow-controls').removeClass('play stop').addClass('play');
+		if (!$('.slider-list .active').length) {
+
+			var number = slideNumbers[PrevActiveSlide.next].number;
+			slideNumbers[PrevActiveSlide.next].active = true;
+			var getActive = function(el) {return $(el).data('slide-number') == number;}
+
+			var slide = $('.slider-list > li, .slides-titles > li').toArray().filter(getActive);
+			$(slide).addClass('active');
+		}
+		$('.slideshow.button').removeClass('play stop').addClass('play');
+	});
+
+	$(document).on('click','.slideshow.button.stop',function() {
+		Timer.Stop();
+		$('.slideshow.button').removeClass('play stop').addClass('play');
 	});
 
 	$(document).on('mouseleave','.slider-list',function(){
 		Timer.Start();
-		$('.slideshow-controls').removeClass('play stop').addClass('stop');
+		$('.slideshow.button').removeClass('play stop').addClass('stop');
 	});
 
-	$(document).on('click','.slideshow-controls.play',function() {
+	$(document).on('click','.slideshow.button.play',function() {
 		Timer.Start();
-		$('.slideshow-controls').removeClass('play stop').addClass('stop');
-	});
-
-	$(document).on('click','.slideshow-controls.stop',function() {
-		Timer.Stop();
-		$('.slideshow-controls').removeClass('play stop').addClass('play');
+		$('.slideshow.button').removeClass('play stop').addClass('stop');
 	});
 
 	$(document).on('click','.slides-titles > li',function(e){
@@ -609,6 +620,8 @@ $(document).ready(function(){
 			return true;
 		})[0];
 
+		PrevActiveSlide = prevActive;
+
 		$('.slides-titles .active, .slider-list .active').removeClass('active');
 
 		var t = setTimeout(function(){
@@ -619,7 +632,8 @@ $(document).ready(function(){
 
 			var slide = $('.slider-list > li, .slides-titles > li').toArray().filter(getActive);
 			$(slide).addClass('active');
-			
+			PrevActiveSlide = null;
+			Update.ControlsStatus();
 			var t2 = setTimeout(function(){
 				slideShowStart();
 			},6000);
