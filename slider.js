@@ -342,12 +342,17 @@ $(document).ready(function(){
 	       	}));
 		},
 		ControlsStatus : function(mul) {
+			
 			if (mul === undefined) mul = 1;
-			if (scale * mul < 1 || scale == 1) $('.zoomout,.reset').attr('disabled','disabled').removeClass('active-btn');
-			else $('.zoomout,.reset').removeAttr('disabled').addClass('active-btn');
 
-			if (scale * mul > 2) $('.zoomin').attr('disabled','disabled').removeClass('active-btn');
-			else $('.zoomin').removeAttr('disabled').addClass('active-btn');
+			function Disable(selector) { $(selector).attr('disabled','disabled').removeClass('active-btn'); }
+			function Enable(selector) { $(selector).removeAttr('disabled').addClass('active-btn');}
+
+			if (scale * mul < 1 || scale == 1) Disable('.zoomout,.reset');
+			else Enable('.zoomout,.reset');
+
+			if (scale * mul > 2) Disable('.zoomin');
+			else Enable('.zoomin');
 		}
 	}
 
@@ -532,18 +537,32 @@ $(document).ready(function(){
 	$('.slideshow-controls').addClass('stop');
 	timers.push(setTimeout(slideShowStart,6000));
 
+	var Timer = {
+		Start : function(){
+			timers.push(setTimeout(slideShowStart,6000));			
+		},
+		Stop : function(){
+			while(timers.length) clearTimeout(timers.pop());
+		}
+	}
+
 	$(document).on('mouseover','.slider-list',function(){
-		ClearTimers();
+		Timer.Stop();
 		$('.slideshow-controls').removeClass('play stop').addClass('play');
 	});
 
+	$(document).on('mouseleave','.slider-list',function(){
+		Timer.Start();
+		$('.slideshow-controls').removeClass('play stop').addClass('stop');
+	});
+
 	$(document).on('click','.slideshow-controls.play',function() {
-		slideShowStart();
+		Timer.Start();
 		$('.slideshow-controls').removeClass('play stop').addClass('stop');
 	});
 
 	$(document).on('click','.slideshow-controls.stop',function() {
-		ClearTimers();
+		Timer.Stop();
 		$('.slideshow-controls').removeClass('play stop').addClass('play');
 	});
 
