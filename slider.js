@@ -88,10 +88,11 @@ $(document).ready(function(){
 
 		areas.forEach(function(area,i){
 			var coords = $(area).attr('coords').split(',').map(parseFloat);
+			//debugger;
 			data[number].points.push({
-				data : coords/*,
-				title : $(area).data('tooltip-title'),
-				content : $(area).html()*/
+				data : coords,
+				title : $(area).data('tooltip-title') || "Sample title",
+				content : $(area).data('tooltip-content') || "Hello world!"
 
 			});
 		});
@@ -405,6 +406,7 @@ $(document).ready(function(){
 	$(document).on('click touchstart','.tooltip-controls .close',function(e){
 		$('.tooltip').remove();
 	});
+
 	$(document).on('click touchstart',"area",function(e){
 		if ($('.tooltip').data('used-for') == $(this).attr('class')) {
 			$('.tooltip').remove();
@@ -413,13 +415,18 @@ $(document).ready(function(){
 		$('.tooltip').remove();
 		var pos = $('.active .img_map').position();
 
+		var ind = $(this).attr('class').slice(1).split('-').map(function(n){ return parseInt(n);});
+
+		var point = data[ind[0]].points[ind[1]];
+		//debugger;
+
 		var tooltip = 
 		$("<div class='tooltip'></div>")
 		.css({opacity:0,left:(-pos.left),top:(-pos.top)})
 		.data('used-for',$(this).attr('class'))
 		.append('<div class="tooltip-controls"><div class="btn close">&#10006;</div></div>')
-		.append("<h3 class='tooltip-title'>Sample title:</h3>")
-		.append($("<div class='tooltip-content'></div>").append("<img src='http://www.cbgbuildingcompany.com/images/sus-building.jpg'/>"))
+		.append($("<h3 class='tooltip-title'></h3>").html(point.title))
+		.append($("<div class='tooltip-content'></div>").append(point.content))
 		.append('<div class="tooltip-arrow"></div>');
 
 		var areaData = $(this).attr('coords').split(',').map(function(c){return parseFloat(c);});
@@ -442,7 +449,7 @@ $(document).ready(function(){
 
 		$('.slider-list .active .img_map').append(tooltip);
 
-		$('.tooltip img').load(function(){
+		if (!$('.tooltip img').length) {
 			Update.ImageValues();
 			params.y = -tooltip.height()/2;
 
@@ -469,8 +476,36 @@ $(document).ready(function(){
 			tooltip.addClass(params.class);
 			tooltip.css({left:(center.x + params.x),top:(center.y + params.y)});
 			tooltip.css('opacity',1);
-		});
-		
+		} else {
+			$('.tooltip img').load(function(){
+				Update.ImageValues();
+				params.y = -tooltip.height()/2;
+
+				if ((center.x + tooltip.width() + 20) > (img.width - 20)) {
+					center.x -= tooltip.width();
+					params.x = -20;
+					params.class = 'right';
+				}
+
+				tooltipPos = {
+					top : (center.y + params.y),
+					bottom : (center.y + params.y + tooltip.height())
+				}
+
+				if (tooltipPos.top < 0) {
+					params.y += (-tooltipPos.top + 10);
+					$('.tooltip-arrow').css({top:(-params.y)});
+				}
+				else if (tooltipPos.bottom > img.height) {
+					params.y -= (tooltipPos.bottom - img.height + 10);
+					$('.tooltip-arrow').css({top:(-params.y)})
+				}
+
+				tooltip.addClass(params.class);
+				tooltip.css({left:(center.x + params.x),top:(center.y + params.y)});
+				tooltip.css('opacity',1);
+			});
+		}	
 	});
 
 	var timers = [];
@@ -480,7 +515,7 @@ $(document).ready(function(){
 	}
 
 	$('.slideshow.button').addClass('stop');
-	timers.push(setTimeout(slideShowStart,6000));
+	//timers.push(setTimeout(slideShowStart,6000));
 
 	var Timer = {
 		Start : function(){
@@ -512,12 +547,12 @@ $(document).ready(function(){
 	});
 
 	$(document).on('mouseleave','.slider-list',function(){
-		Timer.Start();
+		//Timer.Start();
 		$('.slideshow.button').removeClass('play stop').addClass('stop');
 	});
 
 	$(document).on('click','.slideshow.button.play',function() {
-		Timer.Start();
+		//Timer.Start();
 		$('.slideshow.button').removeClass('play stop').addClass('stop');
 	});
 
