@@ -121,7 +121,7 @@ $(document).ready(function(){
 
 	var controls = 
 	$("<div class='slider-controls'></div>")
-	.append($("<input type='button' class='zoomout button active-btn'>"))
+	.append($("<input type='button' class='zoomout button'>"))
 	.append($("<input type='button' class='zoomin button active-btn' >"))
 	.append($("<input type='button' class='reset button active-btn' >"));
 
@@ -343,8 +343,11 @@ $(document).ready(function(){
 		},
 		ControlsStatus : function(mul) {
 			if (mul === undefined) mul = 1;
-			if (scale * mul < 1 || scale == 1) $('.zoomout').attr('disabled','disabled').toggleClass('active-btn');
-			else $('.zoomout').removeAttr('disabled').toggleClass('active-btn');;
+			if (scale * mul < 1 || scale == 1) $('.zoomout,.reset').attr('disabled','disabled').removeClass('active-btn');
+			else $('.zoomout,.reset').removeAttr('disabled').addClass('active-btn');
+
+			if (scale * mul > 2) $('.zoomin').attr('disabled','disabled').removeClass('active-btn');
+			else $('.zoomin').removeAttr('disabled').addClass('active-btn');
 		}
 	}
 
