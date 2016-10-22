@@ -88,7 +88,6 @@ $(document).ready(function(){
 
 		areas.forEach(function(area,i){
 			var coords = $(area).attr('coords').split(',').map(parseFloat);
-			//debugger;
 			data[number].points.push({
 				data : coords,
 				title : $(area).data('tooltip-title') || "Sample title",
@@ -515,7 +514,7 @@ $(document).ready(function(){
 	}
 
 	$('.slideshow.button').addClass('stop');
-	//timers.push(setTimeout(slideShowStart,6000));
+	timers.push(setTimeout(slideShowStart,6000));
 
 	var Timer = {
 		Start : function(){
@@ -547,12 +546,12 @@ $(document).ready(function(){
 	});
 
 	$(document).on('mouseleave','.slider-list',function(){
-		//Timer.Start();
+		Timer.Start();
 		$('.slideshow.button').removeClass('play stop').addClass('stop');
 	});
 
 	$(document).on('click','.slideshow.button.play',function() {
-		//Timer.Start();
+		Timer.Start();
 		$('.slideshow.button').removeClass('play stop').addClass('stop');
 	});
 
