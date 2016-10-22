@@ -6,7 +6,7 @@
 	<script src="https://cdn.jsdelivr.net/jquery.imagemapster/1.2.10/jquery.imagemapster.min.js"></script>
 </head>
 <body>
-	<div class="val-slider">
+	<div class="val-slider" data-slide-transition-time="250" data-slide-time="6000">
 		<div class="val-slider-wrapper">
 			<div class="description">
 				<div class="title">
@@ -16,23 +16,23 @@
 				<ul class="slides-titles"></ul>
 			</div>
 			<ul class="slider-list">
-				<li>
+				<li data-title="Georgia State University">
 					<img class="img_map" src="https://netcommunity.gsu.edu/view.image?Id=3028"/>
 					<map name="empty-map" id="empty-map"></map>
 				</li>
-				<li>
+				<li data-title="Georgia State University 1940">
 					<map>
 						<area shape="poly" href="#" data-tooltip-title="First building" data-tooltip-content="<img src='http://www.cbgbuildingcompany.com/images/sus-building.jpg'/>" coords="525,463,545,436,575,461,553,485,536,473"></area>
 					</map>
 					<img class="img_map" src='https://netcommunity.gsu.edu/view.image?Id=3011'/>
 				</li>
-				<li>
+				<li data-title='Georgia State University 1950'>
 					<map>
 						<area shape="poly" href="#" coords="569.3,482,599,446.9,622.8,467.9,593,503.1"></area>
 					</map>
 					<img class="img_map" src='https://netcommunity.gsu.edu/view.image?Id=3012'/>
 				</li>
-				<li>
+				<li data-title='Georgia State University Campus 1960'>
 					<map>
 						<area shape="poly" href="#" coords="475,535.5,494,512,520,535.5,499.5,555"></area>
 						<area shape="poly" href="#" coords="525,535,555,498,585,521,555,558"></area>
@@ -41,7 +41,7 @@
 					</map>
 					<img class="img_map" src='https://netcommunity.gsu.edu/view.image?Id=3013'/>
 				</li>
-				<li>
+				<li data-title='Georgia State University Campus 1970'>
 					<map>
 						<area shape="poly" href="#" coords="546,433.6,562.6,415,589,438,572.3,456"></area>
 						<area shape="poly" href="#" coords="502,497,526.2,470,546,486.5,521,514"></area>
@@ -57,7 +57,7 @@
 					</map>
 					<img class="img_map" src='https://netcommunity.gsu.edu/view.image?Id=3014'/>
 				</li>
-				<li>
+				<li data-title='Georgia State University Campus 1980'>
 					<map>
 						<area shape="poly" href="#" coords="388.5,476.9,411,448.8,430.5,464,408.2,492.2"></area>
 						<area shape="poly" href="#" coords="487.5,454.8,510,426.8,529.5,442.2,507.8,470.2"></area>
@@ -65,11 +65,11 @@
 						<area shape="poly" href="#" coords="604,519,615.5,505,635,522,623,536"></area>
 						<area shape="poly" href="#" coords="647,465.5,682.5,427,711,451.7,675.4,490"></area>
 						<area shape="poly" href="#" coords="748.6,392.6,748.6,371.4,763.8,371.4,763.8,392.6"></area>
-						<area shape="poly" href="#" coords="856,395,856,368,875,368,875,39"></area>
+						<area shape="poly" href="#" coords="856,395,856,368,875,368,875,395"></area>
 					</map>
 					<img class="img_map" src='https://netcommunity.gsu.edu/view.image?Id=3015'/>
 				</li>
-				<li>
+				<li data-title='Georgia State University Campus 1990'>
 					<map>
 						<area shape="poly" href="#" coords="353.9,199,366.3,189.2,374.1,198,361.5,207.8"></area>
 						<area shape="poly" href="#" coords="364,225,383.7,208,397,222,377.1,239"></area>
@@ -79,40 +79,40 @@
 						<area shape="poly" href="#" coords="292.1,387,305,372.8,324,389.5,311.5,403.2"></area>
 						<area shape="poly" href="#" coords="391.4,418,408,395,427.5,407,410,430"></area>
 						<area shape="poly" href="#" coords="438,448.5,456,426.7,487.1,449,469,472.3"></area>
-						<area shape="poly" href="#" coords="688,494,720.5,458,740,476.5,707,512" data-parking="true"></area>
+						<area shape="poly" href="#" coords="688,494,720.5,458,740,476.5,707,512" data-tooltip-title="Parking" data-tooltip-content="Parking"></area>
 						<area shape="poly" href="#" coords="636,531,668,496,697,520,664,556"></area>
-						<area shape="poly" href="#" coords="471.9,576.5,490.1,553.2,523.1,580.8,504,603.8" data-parking="true"></area>
+						<area shape="poly" href="#" coords="471.9,576.5,490.1,553.2,523.1,580.8,504,603.8" data-tooltip-title="Parking" data-tooltip-content="Parking"></area>
 					</map>
 					<img class="img_map" src='https://netcommunity.gsu.edu/view.image?Id=3016'/>
 				</li>
-				<li>
+				<li data-title='Georgia State University Campus 2000-2009'>
 					<map>
 						<area shape="poly" coords="836,182,836,119,943,119,943,182"></area>
 						<area shape="poly" coords="375,257,405.5,229,426,252,395.5,280"></area>
 						<area shape="poly" coords="699.9,425.5,726.8,395.5,749.6,415,723.5,445.5"></area>
-						<area shape="poly" coords="728,450.5,756,419,773,435.5,745,466" data-parking="true"></area>
+						<area shape="poly" coords="728,450.5,756,419,773,435.5,745,466" data-tooltip-title="Parking" data-tooltip-content="Parking"></area>
 						<area shape="poly" coords="655.5,596.5,705.8,539.9,725.1,558.7,676.7,615.2"></area>
 					</map>
 					<img class="img_map" src='https://netcommunity.gsu.edu/view.image?Id=3017'/>
 				</li>
-				<li>
+				<li data-title="Georgia State University Campus 2010-2015">
 					<map>
 						<area shape="poly" coords="846,91,846,28,933,28,933,91" ></area>
 						<area shape="poly" coords="493,254,493,202,544,202,544,254" ></area>
 						<area shape="poly" coords="836,259,836,209,856,209,856,259" ></area>
-						<area shape="poly" coords="857,287,857,216,886,216,886,287" data-parking="true"></area>
+						<area shape="poly" coords="857,287,857,216,886,216,886,287" data-tooltip-title="Parking" data-tooltip-content="Parking"></area>
 						<area shape="poly" coords="498,305,498,264,546,264,546,305"></area>
 						<area shape="poly" coords="794,287,794,270,822,270,822,287"></area>
 						<area shape="poly" coords="460,386,460,317,496,317,496,386"></area>
 						<area shape="poly" coords="498,387,498,318,527,318,527,387"></area>
-						<area shape="poly" coords="529,386,529,318,583,318,583,386" data-parking="true"></area>
+						<area shape="poly" coords="529,386,529,318,583,318,583,386" data-tooltip-title="Parking" data-tooltip-content="Parking"></area>
 						<area shape="poly" coords="767,382,767,356,776,356,776,382"></area>
 						<area shape="poly" coords="777,379,777,357,788,357,788,379"></area>
 						<area shape="poly" coords="765,395,765,382,791,382,791,392"></area>
 						<area shape="poly" coords="792,389,792,351,819,351,819,389"></area>
 						<area shape="poly" coords="973,396,973,363,993,363,993,396"></area>
 						<area shape="poly" coords="599,672.5,631,638,656,660,624,695"></area>
-						<area shape="poly" coords="830,915,830,823,921,823,921,91"></area>
+						<area shape="poly" coords="830,915,830,823,921,823,921,915"></area>
 					</map>
 					<img class="img_map" src='https://netcommunity.gsu.edu/view.image?Id=3018'/>
 				</li>
