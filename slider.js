@@ -2,6 +2,7 @@ $.extend({
 	Button : function(className,attr) {
 		this.element = $("<input type='button'></input>").addClass(className);
 		for (var field in attr) this.element.attr(field,attr[field]);
+		this.element = this.element[0];
 	}
 })
 
@@ -60,7 +61,7 @@ $(document).ready(function(){
 		},
 		InitialCoords : function(number) {
 			Load.CoordsFromHtml(number);
-			return $.map(data[number].points,function(point,id){
+			return data[number].points.map(function(point,id){
 				var coords = point.data.reduce(function(res,el,i,arr) {
 					res += (i % 2) ? (cur_h*el/img_h) : (cur_w*el/img_w);
 					res += ((i < (arr.length - 1)) ? "," : "");
@@ -68,7 +69,7 @@ $(document).ready(function(){
 				},"");
 				return ($("<area shape='poly' href='#'/>")
 					.addClass("a" + number + "-" + id)
-					.attr('coords',coords));
+					.attr('coords',coords))[0];
 			});
 		},
 		SlideMapAreas : function(number,stack) {
@@ -86,9 +87,11 @@ $(document).ready(function(){
 
 			var map = $(slide).children('map');
 			map = map.length ? $(map[0]) : $("<map></map>");
-			map.attr({id:'map-'+number,name:'map-'+number});
+			map = map.attr({id:'map-'+number,name:'map-'+number});
 			image.attr({id:'img-map-'+number,usemap:'#'+map.attr('name'),src:(imageUrl)}).removeClass('img_map');
-			$(slide).prepend($("<div class='img_map'></div>").append(image));
+			image = image[0];
+			map = map[0];
+			$(slide).prepend($("<div class='img_map'></div>").append(image)[0]);
 			
 			if (!$(slide).children('map').length) $(slide).prepend(map);
 
@@ -458,7 +461,9 @@ $(document).ready(function(){
 	$(document).on('touchstart','.active .img_map',function(event){Events.StartDrag(event,'Touch')});
 	$(document).on('mousemove','.slider-list',function(event){Events.WhileDrag(event,'Cursor');});
 	$(document).on('touchmove','.slider-list',function(event){Events.WhileDrag(event,'Touch');});
-	$(document).on('mouseup touchend','.slider-list',function(){img.obj = null});
+	$(document).on('mouseup touchend','.slider-list',function() {
+		img.obj = null;
+	});
 	$(document).on('click touchstart','.tooltip-controls .close',function(e){$('.tooltip').remove();});
 	$(document).on('click','.zoomout',function(e){zoom(1-zoomer + 0.0109);});
 	$(document).on('click','.zoomin',function(e){zoom(1+zoomer);});

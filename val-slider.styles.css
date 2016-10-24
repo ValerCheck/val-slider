@@ -203,6 +203,7 @@ div.img_map {
 	background: #efefef;
 	border-radius: 3px;
 	overflow: initial !important;
+	white-space: nowrap;
 }
 
 .tooltip-content,
