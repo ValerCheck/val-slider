@@ -1,3 +1,4 @@
+
 $.extend({
 	Button : function(className,attr) {
 		this.element = $("<input type='button'></input>").addClass(className);
@@ -7,6 +8,10 @@ $.extend({
 });
 
 $(document).ready(function(){
+
+	if (!$('.slides-titles').length)
+		$('.val-slider .description')
+		.append("<ul class='slides-titles'></ul>");
 
 	const img_w = 1021;
 	const img_h = 941;
@@ -43,7 +48,7 @@ $(document).ready(function(){
 				data[number].points.push({
 					data : coords,
 					title : $(area).data('tooltip-title') || "Sample title",
-					content : $(area).data('tooltip-content') || "Hello world!"
+					content : $(area).data('tooltip-content') || ""
 				});
 				return area;
 			});
@@ -240,6 +245,30 @@ $(document).ready(function(){
 
 			if (scale * mul > 2) Disable('.active .zoomin');
 			else Enable('.active .zoomin');
+		},
+		AreaCoords : function(slide) {
+
+			var number = $(slide).data('slide-number');
+
+			function GetSlideCoords(num) {
+				return data[num].points.map(function(point,id){
+					return point.data.reduce(function(res,el,i,arr) {
+						res += (i % 2) ? (cur_h*el/img_h) : (cur_w*el/img_w);
+						res += ((i < (arr.length - 1)) ? "," : "");
+						return res;
+					},"");
+				});
+			};
+
+			var coords = [];
+
+			for (var i=0;i < number;i++) coords = coords.concat(GetSlideCoords(i));
+
+			var areas = $(slide).find('area');
+//debugger;
+			for (var i=0;i<coords.length;i++) {
+				$(areas[i]).attr('coords',coords[i]);
+			}
 		}
 	}
 
@@ -290,13 +319,13 @@ $(document).ready(function(){
 			var args = [].slice.call(arguments);
 			var GenerateCoordsFromArray = function(arr,scale) {
 				return arr.reduce(function(res,el,i,arr) {
+					//res += (i % 2) ? (cur_h*el*scale/img_h) : (cur_w*el*scale/img_w);
 					res += (i % 2) ? el*scale : el*scale;
 					res += ((i < (arr.length - 1)) ? "," : "");
 					return res;
 				},"");
 			}
-			var ScaleCoordinates = function(data,scale) {
-				if (data) return GenerateCoordsFromArray(data,scale);
+			var ScaleCoordinates = function(scale) {
 				$('.slider-list > .active area')
 				.toArray()
 				.forEach(function(area){
@@ -310,7 +339,27 @@ $(document).ready(function(){
 			switch(command){
 				case 'resize' :
 					$(this).css({width:args[0].width,height:args[0].height,left:0,top:0});
-					ScaleCoordinates(null,args[0].scale);
+					if (args[0].all) {
+						//cur_w = $('.slider-list > li:first').width();
+						//cur_h = $('.slider-list > li:first').height();
+						$('.slider-list > li')
+						.toArray()
+						.forEach(function(slide){
+							Update.AreaCoords(slide);
+							$(slide)
+							.find('area')
+							.toArray()
+							.forEach(function(area){
+								var values = $(area).attr('coords').split(',');
+								$(area).attr('coords',GenerateCoordsFromArray(values,scale));
+							});
+						});
+						$(this).toArray().forEach(function(img_map){
+							$(img_map).css({width:args[0].width,height:args[0].height,left:0,top:0});
+						});
+						return;
+					}
+					ScaleCoordinates(args[0].scale);
 					break;
 			}
 		}
@@ -401,7 +450,7 @@ $(document).ready(function(){
 		$("<div class='tooltip'></div>")
 		.css({opacity:0,left:(-pos.left),top:(-pos.top)})
 		.data('used-for',$(this).attr('class'))
-		.append('<div class="tooltip-controls"><div class="btn close">&#10006;</div></div>')
+		.append('<div class="tooltip-controls"><div class="tooltip-btn close">&#10006;</div></div>')
 		.append($("<h3 class='tooltip-title'></h3>").html(point.title))
 		.append($("<div class='tooltip-content'></div>").append(point.content))
 		.append('<div class="tooltip-arrow"></div>')
@@ -424,7 +473,7 @@ $(document).ready(function(){
 	});
 
 	$(document).on('mouseover','.slider-list',function(){
-		//Timer.Stop();
+		Timer.Stop();
 		if (!$('.slider-list .active').length) {
 			var slide = slideNumbers[PrevActiveSlide.next];
 			slide.active = true;
@@ -449,7 +498,15 @@ $(document).ready(function(){
 			setTimeout(function(){
 				$(target[0]).addClass('active');
 				Update.ControlsStatus();
-				$('.active .img_map').css({width:'100%',height:'100%',left:0,top:0});
+				var active = $('.active .img_map');
+				var activeImg = active.find('img');
+				active.css({left:0,top:0});
+				zoom(1.0/scale);
+
+				if (activeImg.width() > active.width()) active.css('width',activeImg.width());
+				else if (activeImg.height() > active.height()) active.css('height',activeImg.height());
+
+				
 				$('.tooltip').remove();
 				GetPreviousActiveSlideNumberAndDeactivate();
 				slideNumbers[$('.slider-list .active').data('slide-number')-1].active = true;
@@ -469,24 +526,42 @@ $(document).ready(function(){
 	$(document).on('click','.zoomout',function(e){zoom(1-zoomer + 0.0109);});
 	$(document).on('click','.zoomin',function(e){zoom(1+zoomer);});
 	$(document).on('click','.reset',function(e){zoom(1.0/scale);});
-	/*$(document).on('click','.slideshow.button.stop',Timer.Stop);
+	$(document).on('click','.slideshow.button.stop',Timer.Stop);
 	$(document).on('mouseleave','.slider-list',Timer.Start);
-	$(document).on('click','.slideshow.button.play',Timer.Start);*/
+	$(document).on('click','.slideshow.button.play',Timer.Start);
 
 	function resizeViewport() {
 		var wrapper = $('.val-slider-wrapper');
-		if ($(document).width > 801) return;
-		if (wrapper.width() > wrapper.height())
-			$('.img_map img').css({width:'100%',height:'auto'});
-		else if (wrapper.width() < wrapper.height())
-			$('.img_map img').css({width:'auto',height:'100%'});
-		else
-			$('.img_map img').css({width:'100%',height:'100%'});
-		var current = {
-			width : $('.active .img_map').width(),
-			height : $('.active .img_map').height()
+		var imgWrappers = $('.img_map');
+		var images = $('.img_map img');
+		
+		if ($(document).width() > 801) return;
+		
+		var size = {width:'100%',height:'100%'};
+		if (wrapper.width() > wrapper.height()) size.height = 'auto';
+		else if (wrapper.width() < wrapper.height()) size.width = 'auto';
+		
+		imgWrappers.css(size);
+		images.css(size);
+
+		cur_w = imgWrappers.width();
+		cur_h = imgWrappers.height();
+
+		img.frame  = {
+			top    : $('.active .img_map').position().top,
+			left   : $('.active .img_map').position().left,
+			width  : $('.active .img_map').parent().width(),
+			height : $('.active .img_map').parent().height()
 		}
-		$('.active .img_map').valSlider('resize',current);
+
+		var current = {
+			width : $('.active .img_map img').width(),
+			height : $('.active .img_map img').height(),
+			all : true
+		}
+
+		$('.img_map').valSlider('resize',current);
+
 		Update.ImageValues();
 		Update.TooltipPosition();
 		Update.ControlsStatus(1);
@@ -517,6 +592,6 @@ $(document).ready(function(){
 		Timer.Start(transition);
 	}
 
-	//Timer.Start();
+	Timer.Start();
 
 });

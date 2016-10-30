@@ -18,13 +18,13 @@ body {
 }
 
 .slideshow.button.stop {
-	background-image: url(./images/stop-button.png);
+	background-image: url(http://res.cloudinary.com/dp1z7htrk/image/upload/v1477130322/stop-button_njtrsw.png);
 }
 
 .slider-controls > *
  {
-	width: 30px;
-    height: 30px;
+	width: 25px;
+    height: 25px;
     display: block;
     background-size: cover;
     background-color: transparent;
@@ -44,25 +44,24 @@ body {
 }
 
 .slider-controls .zoomout {
-	background-image: url(./images/zoom-out-button.png);
+	background-image: url(https://netcommunity.gsu.edu/view.image?Id=3043);
 }
 
 .slider-controls .zoomin {
-	background-image: url(./images/zoom-in-button.png);
+	background-image: url(https://netcommunity.gsu.edu/view.image?Id=3042);
 }
 
 .slider-controls .reset {
-	background-image: url(./images/reset-button.png);
+	background-image: url(https://netcommunity.gsu.edu/view.image?Id=3040);
 }
 
 .slideshow.button.play {
-	background-image: url(./images/play-button.png);
+	background-image: url(https://netcommunity.gsu.edu/view.image?Id=3039);
 }
 
 .val-slider-wrapper {
 	width: 100%;
 	height: 100%;
-	position: relative;
 }
 
 .val-slider-wrapper .description {
@@ -89,15 +88,17 @@ body {
 	width: 17px;
 	height: 17px;
 	vertical-align: middle;
-	margin-left: 5px;
+	margin-left: 8px;
+  margin-bottom:2px;
 	border-radius: 3px;
+
 }
 
 .slides-titles {
 	font-family: 'Open Sans', sans-serif;
 	font-weight: normal;
 	font-size: 17px;
-	margin: 10px 5px 0 5px;
+	margin: 0px 5px 0 5px;
 	padding-left: 0;
 }
 
@@ -123,7 +124,7 @@ body {
 	display: inline-block;
 	border-top: 5px solid transparent;
 	border-bottom: 5px solid transparent;
-	border-left: 5px solid #666;
+	border-left: 5px solid blue;
 	margin-right: 5px;
 }
 
@@ -204,7 +205,6 @@ div.img_map {
 	background: #efefef;
 	border-radius: 3px;
 	overflow: initial !important;
-	white-space: nowrap;
 }
 
 .tooltip-content,
@@ -212,9 +212,17 @@ div.img_map {
 	padding: 5px;
 }
 
+.tooltip-content p {
+  margin-top: 0;
+  margin-bottom: 5px;
+  max-width: 150px;
+}
+
 .tooltip-content img {
-	width: 200px;
+	width: 150px;
 	height: auto;
+  display: block;
+    margin: auto;
 }
 
 .tooltip-title {
@@ -229,7 +237,7 @@ div.img_map {
 	padding: 5px 5px 0 0;
 }
 
-.tooltip-controls .btn.close {
+.tooltip-controls .tooltip-btn.close {
 	line-height: 13px;
     display: inline-block;
     padding: 3px;
@@ -241,7 +249,7 @@ div.img_map {
     cursor: pointer;
 }
 
-.tooltip-controls .btn.close:hover {
+.tooltip-controls .tooltip-btn.close:hover {
 	background-color: lightgrey;
 }
 
@@ -313,7 +321,13 @@ div.img_map {
 
 @media screen and (max-device-width:801px), screen and (max-width: 801px) {
 	.val-slider {
-		width: 80%;
+		width: 90%;
+		height: 400px;
+	}
+
+	.val-slider-wrapper {
+		position: relative;
+		overflow-y: hidden;
 	}
 
 	.val-slider-wrapper .description {
@@ -325,6 +339,16 @@ div.img_map {
 
 	.val-slider .slider-list {
 		width: 100%;
+	}
+
+	.description::-webkit-scrollbar {
+		width: 0px;
+		background: transparent;
+	}
+
+	.description::-webkit-scrollbar-thumb {
+		border-radius: 5px;
+		background: #ff0000;
 	}
 
 	.menu-button {
