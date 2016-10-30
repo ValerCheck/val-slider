@@ -265,7 +265,7 @@ $(document).ready(function(){
 			for (var i=0;i < number;i++) coords = coords.concat(GetSlideCoords(i));
 
 			var areas = $(slide).find('area');
-//debugger;
+
 			for (var i=0;i<coords.length;i++) {
 				$(areas[i]).attr('coords',coords[i]);
 			}
@@ -487,6 +487,7 @@ $(document).ready(function(){
 
 	$(document).on('click','.slides-titles > li',function(e){
 		
+		zoom(1.0/scale);
 		$('.slides-titles .active, .slider-list .active').removeClass('active');
 		var target = $(e.currentTarget).addClass('active');
 
@@ -501,7 +502,7 @@ $(document).ready(function(){
 				var active = $('.active .img_map');
 				var activeImg = active.find('img');
 				active.css({left:0,top:0});
-				zoom(1.0/scale);
+				
 
 				if (activeImg.width() > active.width()) active.css('width',activeImg.width());
 				else if (activeImg.height() > active.height()) active.css('height',activeImg.height());
