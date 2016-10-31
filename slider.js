@@ -136,6 +136,12 @@ $(document).ready(function(){
 			slideNumbers.forEach(function(el,index){
 				if (!el.next) el.next = (index+1 < slideNumbers.length) ? (index + 1) : 0;
 			});
+		},
+		LightBox : function() {
+			var container = $('<div id="lightbox"></div>');
+			var close = $('<p class="close-btn"><span>Close</span></p>');
+			var content = $('<div id="content"><img src="#"/></div>');
+			container.append(close).append(content).appendTo('.val-slider');
 		}
 	}
 
@@ -416,6 +422,7 @@ $(document).ready(function(){
 
 	var Timer = {
 		Start : function(t){
+			if (LightBox.active) return;
 			if (!t || typeof(t) !== "number" ) t = setTimeout(slideShowStart,slideTime);
 			timers.push(t);
 			$('.slideshow.button').removeClass('play stop').addClass('stop');
@@ -423,6 +430,25 @@ $(document).ready(function(){
 		Stop : function(){
 			while(timers.length) clearTimeout(timers.pop());
 			$('.slideshow.button').removeClass('play stop').addClass('play');
+		}
+	}
+
+	var LightBox = {
+		active : false,
+		Show : function(img) {
+			this.active = true;
+			Timer.Stop();
+			var contentImg = $('#lightbox #content img');
+			contentImg.attr('src',$(img).attr('src'));
+			if ($(img).height() > $(img).width()) contentImg.css({'max-height':'500px'})
+			$('#lightbox').fadeIn('400', function() {});
+		},
+		Hide : function() {
+			$('#lightbox').fadeOut('200', function() {
+				$('#lightbox #content img').attr('src','#');	
+			});
+			Timer.Start();
+			this.active = false;
 		}
 	}
 
@@ -530,6 +556,14 @@ $(document).ready(function(){
 	$(document).on('click','.slideshow.button.stop',Timer.Stop);
 	$(document).on('mouseleave','.slider-list',Timer.Start);
 	$(document).on('click','.slideshow.button.play',Timer.Start);
+	
+	$(document).on('click','.tooltip-content img',function(e){
+		LightBox.Show(this);
+	});
+
+	$(document).on('click','#lightbox p',function() {
+		LightBox.Hide();
+	});
 
 	function resizeViewport() {
 		var wrapper = $('.val-slider-wrapper');
@@ -593,6 +627,7 @@ $(document).ready(function(){
 		Timer.Start(transition);
 	}
 
+	Generate.LightBox();
 	Timer.Start();
 
 });

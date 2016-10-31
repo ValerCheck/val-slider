@@ -310,9 +310,52 @@ div.img_map {
 	display: none;
 }
 
+.tooltip-content img {
+	cursor: pointer;
+}
 
 #menuToggle {
 	display: none;
+}
+
+#lightbox {
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: url(http://res.cloudinary.com/dp1z7htrk/image/upload/v1477871732/overlay_vbtths.png) repeat;
+	text-align: center;
+	transition: opacity 0.2s;
+	z-index: 99999;
+}
+
+#lightbox p {
+    text-align:right; 
+    color:#fff; 
+    margin-right:20px; 
+    font-size: 20px;
+}
+
+#lightbox p span {
+	display: inline-block;
+	padding: 5px;
+	border-radius: 8px;
+	border: 1px solid white;
+	cursor: pointer;
+	transition: all 0.2s;
+}
+
+#lightbox p span:hover {
+	background: black;
+}
+
+#lightbox img {
+    box-shadow:0 0 25px #111;
+    -webkit-box-shadow:0 0 25px #111;
+    -moz-box-shadow:0 0 25px #111;
+    max-width:940px;
 }
 
 /*@media (min-width:320px)
