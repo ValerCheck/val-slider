@@ -447,8 +447,8 @@ $(document).ready(function(){
 			$('#lightbox').fadeOut('200', function() {
 				$('#lightbox #content img').attr('src','#');	
 			});
-			Timer.Start();
 			this.active = false;
+			Timer.Start();
 		}
 	}
 
