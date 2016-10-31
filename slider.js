@@ -139,9 +139,10 @@ $(document).ready(function(){
 		},
 		LightBox : function() {
 			var container = $('<div id="lightbox"></div>');
-			var close = $('<p class="close-btn"><span>Close</span></p>');
-			var content = $('<div id="content"><img src="#"/></div>');
-			container.append(close).append(content).appendTo('.val-slider');
+			var content = $('<div id="content"></div>');
+			var img_wrapper = $('<div class="img-wrapper"><img src="#"/></div>');
+			var close = $('<div class="close-btn"></div>');
+			container.append(content.append(img_wrapper.append(close))).appendTo('.val-slider');
 		}
 	}
 
@@ -561,7 +562,7 @@ $(document).ready(function(){
 		LightBox.Show(this);
 	});
 
-	$(document).on('click','#lightbox p',function() {
+	$(document).on('click','#lightbox .close-btn',function() {
 		LightBox.Hide();
 	});
 
