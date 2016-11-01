@@ -34,7 +34,8 @@ $(document).ready(function(){
 			});	
 		},
 		CoordsFromHtml : function(number) {
-			if (data[number].points && data[number].points.length) return;
+			if (!data[number]) data[number] = { set : number+1 };
+			if (data[number] && data[number].points && data[number].points.length) return;
 			data[number].points = [];
 			var areas = $($('.slider-list > li')
 				.toArray()
@@ -102,8 +103,10 @@ $(document).ready(function(){
 
 			var areas = [];
 
+			if ($(slide).data('new-data')) stack = false;
+
 			if (stack) for (var i = 0; i < number; i++) areas = areas.concat(Generate.InitialCoords(i));
-			else areas = Generate.InitialCoords(number);
+			else areas = Generate.InitialCoords(number-1);
 
 			$(slide)
 			.children('map')
@@ -547,9 +550,7 @@ $(document).ready(function(){
 	$(document).on('touchstart','.active .img_map',function(event){Events.StartDrag(event,'Touch')});
 	$(document).on('mousemove','.slider-list',function(event){Events.WhileDrag(event,'Cursor');});
 	$(document).on('touchmove','.slider-list',function(event){Events.WhileDrag(event,'Touch');});
-	$(document).on('mouseup touchend','.slider-list',function() {
-		img.obj = null;
-	});
+	$(document).on('mouseup touchend','.slider-list',function() { img.obj = null; });
 	$(document).on('click touchstart','.tooltip-controls .close',function(e){$('.tooltip').remove();});
 	$(document).on('click','.zoomout',function(e){zoom(1-zoomer + 0.0109);});
 	$(document).on('click','.zoomin',function(e){zoom(1+zoomer);});
@@ -571,7 +572,6 @@ $(document).ready(function(){
 		if ($(document).width() > 801) return;
 		
 		var valSlider = $('.val-slider');
-		//debugger;
 		valSlider.height(valSlider.width());
 
 		var wrapper = $('.val-slider-wrapper');
