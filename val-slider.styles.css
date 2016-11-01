@@ -389,8 +389,10 @@ body {
 
 @media screen and (max-device-width:801px), screen and (max-width: 801px) {
 	.val-slider {
-		width: 90%;
-		height: 400px;
+		min-height: 320px;
+		min-width: 320px;
+		max-width: 90%;
+		box-sizing: border-box;
 	}
 
 	.val-slider-wrapper {
@@ -459,7 +461,8 @@ body {
 	}
 
 	.val-slider .slider-controls {
-		top: 40px;
+		top: 0;
+		right: 0;
 	}
 
 	#menuToggle:checked ~ .description {

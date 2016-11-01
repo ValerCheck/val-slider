@@ -567,18 +567,29 @@ $(document).ready(function(){
 	});
 
 	function resizeViewport() {
-		var wrapper = $('.val-slider-wrapper');
-		var imgWrappers = $('.img_map');
-		var images = $('.img_map img');
 		
 		if ($(document).width() > 801) return;
 		
+		var valSlider = $('.val-slider');
+		//debugger;
+		valSlider.height(valSlider.width());
+
+		var wrapper = $('.val-slider-wrapper');
+		var imgWrappers = $('.img_map');
+		var images = $('.img_map img');
+
 		var size = {width:'100%',height:'100%'};
 		if (wrapper.width() > wrapper.height()) size.height = 'auto';
 		else if (wrapper.width() < wrapper.height()) size.width = 'auto';
 		
 		imgWrappers.css(size);
 		images.css(size);
+
+		if (images.height() < wrapper.height()) {
+			size = {height:'100%',width:'auto'};
+			imgWrappers.css(size);
+			images.css(size);
+		}
 
 		cur_w = imgWrappers.width();
 		cur_h = imgWrappers.height();
