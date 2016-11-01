@@ -558,11 +558,11 @@ $(document).ready(function(){
 	$(document).on('mouseleave','.slider-list',Timer.Start);
 	$(document).on('click','.slideshow.button.play',Timer.Start);
 	
-	$(document).on('click','.tooltip-content img',function(e){
+	$(document).on('click, touchstart','.tooltip-content img',function(e){
 		LightBox.Show(this);
 	});
 
-	$(document).on('click','#lightbox .close-btn',function() {
+	$(document).on('click, touchstart','#lightbox .close-btn',function() {
 		LightBox.Hide();
 	});
 
