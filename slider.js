@@ -577,6 +577,7 @@ $(document).ready(function(){
 		if ($(document).width() > 801) {
 			if (valSlider.attr('style')) valSlider.removeAttr('style');
 			if (imgWrappers.attr('style')) imgWrappers.removeAttr('style');
+			if (images.attr('style')) images.removeAttr('style');
 
 			cur_w = imgWrappers.width();
 			cur_h = imgWrappers.height();
