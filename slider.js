@@ -569,15 +569,41 @@ $(document).ready(function(){
 	});
 
 	function resizeViewport() {
-		
-		if ($(document).width() > 801) return;
-		
 		var valSlider = $('.val-slider');
-		valSlider.height(valSlider.width());
-
 		var wrapper = $('.val-slider-wrapper');
 		var imgWrappers = $('.img_map');
 		var images = $('.img_map > img');
+
+		if ($(document).width() > 801) {
+			if (valSlider.attr('style')) valSlider.removeAttr('style');
+			if (imgWrappers.attr('style')) imgWrappers.removeAttr('style');
+
+			cur_w = imgWrappers.width();
+			cur_h = imgWrappers.height();
+
+			img.frame  = {
+				top    : $('.active .img_map').position().top,
+				left   : $('.active .img_map').position().left,
+				width  : $('.active .img_map').parent().width(),
+				height : $('.active .img_map').parent().height()
+			}
+
+			var current = {
+				width : $('.active .img_map img').width(),
+				height : $('.active .img_map img').height(),
+				all : true
+			}
+
+			$('.img_map').valSlider('resize',current);
+
+			Update.ImageValues();
+			Update.TooltipPosition();
+			Update.ControlsStatus(1);
+
+			return;
+		}
+		
+		valSlider.height(valSlider.width());
 
 		var size = {width:'100%',height:'100%'};
 		if (wrapper.width() > wrapper.height()) size.height = 'auto';
