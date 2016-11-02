@@ -13,9 +13,10 @@ $(document).ready(function(){
 		$('.val-slider .description')
 		.append("<ul class='slides-titles'></ul>");
 
-	const img_w = 1021;
-	const img_h = 941;
-	const zoomer = 0.1;
+	var img_w = 1021;
+	var img_h = 941;
+	var zoomer = 0.1;
+
 	var scale = 1, slideNumbers=[], currentSlide, lastSlideNumber = 0, PrevActiveSlide = null, timers = [];
 	var cur_w,cur_h,cursor,delta,img;
 	var slideTime = parseInt($('.val-slider').data('slide-time'));
