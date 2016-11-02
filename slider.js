@@ -330,7 +330,6 @@ $(document).ready(function(){
 			var args = [].slice.call(arguments);
 			var GenerateCoordsFromArray = function(arr,scale) {
 				return arr.reduce(function(res,el,i,arr) {
-					//res += (i % 2) ? (cur_h*el*scale/img_h) : (cur_w*el*scale/img_w);
 					res += (i % 2) ? el*scale : el*scale;
 					res += ((i < (arr.length - 1)) ? "," : "");
 					return res;
@@ -351,8 +350,6 @@ $(document).ready(function(){
 				case 'resize' :
 					$(this).css({width:args[0].width,height:args[0].height,left:0,top:0});
 					if (args[0].all) {
-						//cur_w = $('.slider-list > li:first').width();
-						//cur_h = $('.slider-list > li:first').height();
 						$('.slider-list > li')
 						.toArray()
 						.forEach(function(slide){
@@ -607,8 +604,8 @@ $(document).ready(function(){
 		valSlider.height(valSlider.width());
 
 		var size = {width:'100%',height:'100%'};
-		if (wrapper.width() > wrapper.height()) size.height = 'auto';
-		else if (wrapper.width() < wrapper.height()) size.width = 'auto';
+		//if (wrapper.width() > wrapper.height()) size.height = 'auto';
+		//else if (wrapper.width() < wrapper.height()) size.width = 'auto';
 		
 		imgWrappers.css(size);
 		images.css(size);
