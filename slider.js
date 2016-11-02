@@ -576,7 +576,7 @@ $(document).ready(function(){
 
 		var wrapper = $('.val-slider-wrapper');
 		var imgWrappers = $('.img_map');
-		var images = $('.img_map img');
+		var images = $('.img_map > img');
 
 		var size = {width:'100%',height:'100%'};
 		if (wrapper.width() > wrapper.height()) size.height = 'auto';
