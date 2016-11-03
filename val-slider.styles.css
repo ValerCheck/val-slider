@@ -528,9 +528,10 @@ body {
 
 	body #lightbox .close-btn:before {
 	    display: inline-block;
-	    line-height: 40px;
-	    vertical-align: middle;
-	    font-size: 30px;
+	    line-height: 14px;
+	    top: 13px;
+	    position: absolute;
+	    left: 0;
 	}
 
 }
