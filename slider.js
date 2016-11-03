@@ -463,6 +463,7 @@ $(document).ready(function(){
 	}
 
 	$(document).on('touchstart','area',function(e){
+		e.preventDefault();
 		if ($('.tooltip').data('used-for') == $(this).attr('class')) {
 			return;
 		}
