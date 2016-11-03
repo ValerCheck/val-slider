@@ -372,11 +372,13 @@ body {
 
 #lightbox .close-btn:before {
 	content: "\00d7";
-    display: block;
+    display: inline-block;
     color: white;
     width: 100%;
-    line-height: 50px;
-    vertical-align: middle;
+    line-height: 18px;
+    position: absolute;
+    top: 16px;
+    left: 0;
     font-size: 40px;
     font-weight: bold;
 }
