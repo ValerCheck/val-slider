@@ -273,7 +273,7 @@ $(document).ready(function(){
 
 			var coords = [];
 
-			for (var i=0;i < number;i++) coords = coords.concat(GetSlideCoords(i));
+			for (var i= ($(slide).data('new-data')? (number-1) : 0) ;i < number;i++) coords = coords.concat(GetSlideCoords(i));
 
 			var areas = $(slide).find('area');
 
