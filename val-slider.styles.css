@@ -499,18 +499,6 @@ body {
 		display: none;
 	}
 
-	#menuToggle:checked ~ .menu-button div:first-child {
-		margin: 0;
-		-webkit-transform: rotate(45deg) translate(16px,10px);
-		transform : rotate(45deg) translate(16px,10px);
-	}
-
-	#menuToggle:checked ~ .menu-button div:nth-child(3) {
-		margin: 0;
-		-webkit-transform: rotate(-45deg) translate(-8px,13px);
-		transform: rotate(-45deg) translate(-8px,13px);
-	}
-
 	#lightbox img {
 		display: inline-block;
 	    box-shadow:0 0 25px #111;
@@ -526,12 +514,13 @@ body {
 	    right: 10px;
 	}
 
-	body #lightbox .close-btn:before {
-	    display: inline-block;
-	    line-height: 14px;
-	    top: 13px;
-	    position: absolute;
-	    left: 0;
+	#lightbox .close-btn:before {
+	    display: inline-block !important;
+	    line-height: 14px !important;
+	    top: 13px !important;
+	    position: absolute !important;
+	    font-size: 30px;
+	    left: 0 !important;
 	}
 
 }
