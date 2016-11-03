@@ -462,7 +462,43 @@ $(document).ready(function(){
 		})[0];
 	}
 
-	$(document).on('click touchstart',"area",function(e){
+	$(document).on('touchstart','area',function(e){
+		if ($('.tooltip').data('used-for') == $(this).attr('class')) {
+			return;
+		}
+		$('.tooltip').remove();
+		var pos = $('.active .img_map').position();
+
+		var ind = $(this).attr('class').slice(1).split('-').map(function(n){ return parseInt(n);});
+
+		var point = data[ind[0]].points[ind[1]];
+
+		var tooltip = 
+		$("<div class='tooltip'></div>")
+		.css({opacity:0,left:(-pos.left),top:(-pos.top)})
+		.data('used-for',$(this).attr('class'))
+		.append('<div class="tooltip-controls"><div class="tooltip-btn close">&#10006;</div></div>')
+		.append($("<h3 class='tooltip-title'></h3>").html(point.title))
+		.append($("<div class='tooltip-content'></div>").append(point.content))
+		.append('<div class="tooltip-arrow"></div>')
+		.appendTo('.slider-list .active .img_map');
+
+		var areaData = $(this).attr('coords').split(',').map(function(c){return parseFloat(c);});
+
+		var PositionTooltip = function() {
+			var center = GetCenterOfPolygon(areaData);
+			Update.ImageValues();
+			var correction = TooltipPositionCorrection(center,tooltip);
+			tooltip
+			.addClass(correction.class)
+			.css({left:(center.x + correction.x),top:(center.y + correction.y),opacity:1});
+		}
+
+		if ($('.tooltip img').length) $('.tooltip img').load(PositionTooltip);
+		else PositionTooltip();
+	});
+
+	$(document).on('click',"area",function(e){
 		if ($('.tooltip').data('used-for') == $(this).attr('class')) {
 			$('.tooltip').remove();
 			return;
