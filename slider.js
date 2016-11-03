@@ -146,7 +146,7 @@ $(document).ready(function(){
 			var content = $('<div id="content"></div>');
 			var img_wrapper = $('<div class="img-wrapper"><img src="#"/></div>');
 			var close = $('<div class="close-btn"></div>');
-			container.append(content.append(img_wrapper.append(close))).appendTo('.val-slider');
+			container.append(content.append(img_wrapper.append(close))).appendTo('body');
 		}
 	}
 
