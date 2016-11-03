@@ -398,8 +398,9 @@ body {
 }
 
 #lightbox .img-wrapper {
-	position: relative;
+    position: relative;
     display: inline-block;
+    width: initial;
 }
 
 /*@media (min-width:320px)
