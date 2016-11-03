@@ -526,13 +526,11 @@ body {
 	    right: 10px;
 	}
 
-	#lightbox .close-btn:before {
-		color: white;
-	    width: 100%;
+	body #lightbox .close-btn:before {
+	    display: inline-block;
 	    line-height: 40px;
 	    vertical-align: middle;
 	    font-size: 30px;
-	    font-weight: bold;
 	}
 
 }
